@@ -1,0 +1,165 @@
+dia;franja;curso;asignatura;grupos;aula
+lunes;F1;1;Literatura Universal;DE;4.2
+lunes;F1;1;Mat CCSS I;D;3.4
+lunes;F1;1;Computación;E;A. Informática
+lunes;F1;2;Empresa;E;1.1
+lunes;F1;2;Geografía;EF;2.2
+lunes;F2;2;Computación;ACDE;A. Informática
+lunes;F2;2;Alemán II;ACDE;A. Emp
+lunes;F2;2;Empresa;ABCDE;2.1
+lunes;F2;2;Tecnología e Ingeniería II;ABD;3.2
+lunes;F2;2;Química;AB;3.1
+lunes;F2;2;Psicología;ADE;1.1
+lunes;F2;2;Francés II;BCD;1.2
+lunes;F2;2;Francés II;E;A. T.3
+lunes;F3;1;Economía;ABCD;4.3
+lunes;F3;1;Biología y Geología;ABC;3.3
+lunes;F3;1;Computación;ABCD;A. Informática
+lunes;F3;1;Tecnología e Ingeniería I;AB;4.4
+lunes;F3;1;Francés I;BCD;3.4
+lunes;F3;1;Alemán I;BCD;4.1
+lunes;F3;2;Matemáticas II;C;1.2
+lunes;F3;2;Latín II;CE;A. Emp
+lunes;F3;2;Mat CCSS II;E;1.1
+lunes;F4;1;Anatomía;BC;4.3
+lunes;F4;1;Física y Química;B;3.3
+lunes;F4;1;Física y Química;C;4.1
+lunes;F4;1;Latín I;D;A. Emp
+lunes;F4;1;Economía;D;3.4
+lunes;F4;2;Mat CCSS II;CF;2.2
+lunes;F4;2;Tecnología e Ingeniería II;C;1.2
+lunes;F5;1;Dibujo Técnico I;A;A. Dibujo
+lunes;F5;1;Tecnología e Ingeniería I;AC;4.4
+lunes;F5;1;Física y Química;BC;3.3
+lunes;F5;1;Biología y Geología;BC;4.1
+lunes;F6;2;Biología;AB;3.1
+lunes;F6;2;Dibujo Técnico II;A;A. Dibujo
+lunes;F6;2;Química;AB;3.2
+lunes;F7;2;Física;BC;3.1
+lunes;F7;2;Psicología;BF;2.2
+lunes;F7;2;Historia del Arte;CEF;1.1
+lunes;F7;2;Geografía;CE;1.2
+lunes;F7;2;Computación;F;A. Informática
+martes;F1;2;Empresa;E;1.1
+martes;F1;2;Geografía;EF;2.2
+martes;F2;1;Dibujo Técnico I;A;A. Dibujo
+martes;F2;1;Tecnología e Ingeniería I;AC;4.4
+martes;F2;1;Física y Química;BC;3.3
+martes;F2;1;Biología y Geología;BC;4.1
+martes;F3;1;Latín I;D;A. Emp
+martes;F3;1;Economía;D;3.4
+martes;F3;2;Física;BC;3.1
+martes;F3;2;Psicología;BF;2.2
+martes;F3;2;Historia del Arte;CEF;1.1
+martes;F3;2;Geografía;CE;1.2
+martes;F3;2;Computación;F;A. Informática
+martes;F4;1;Literatura Universal;DE;4.2
+martes;F4;1;Mat CCSS I;D;3.4
+martes;F4;1;Computación;E;A. Informática
+martes;F4;2;Matemáticas II;C;1.2
+martes;F4;2;Latín II;CE;A. Emp
+martes;F4;2;Mat CCSS II;E;1.1
+martes;F5;1;Anatomía;BC;4.3
+martes;F5;1;Física y Química;B;3.3
+martes;F5;1;Física y Química;C;4.1
+martes;F5;2;Mat CCSS II;CF;2.2
+martes;F5;2;Tecnología e Ingeniería II;C;1.2
+martes;F6;2;Biología;AB;3.1
+martes;F6;2;Dibujo Técnico II;A;A. Dibujo
+martes;F6;2;Química;AB;3.2
+miercoles;F1;1;Dibujo Técnico I;A;A. Dibujo
+miercoles;F1;1;Tecnología e Ingeniería I;AC;4.4
+miercoles;F1;1;Física y Química;BC;3.3
+miercoles;F1;1;Biología y Geología;BC;4.1
+miercoles;F2;1;Economía;ABCD;4.3
+miercoles;F2;1;Biología y Geología;ABC;3.3
+miercoles;F2;1;Computación;ABCD;A. Informática
+miercoles;F2;1;Tecnología e Ingeniería I;AB;4.4
+miercoles;F2;1;Francés I;BCD;3.4
+miercoles;F2;1;Alemán I;BCD;4.1
+miercoles;F2;2;Matemáticas II;C;1.2
+miercoles;F2;2;Latín II;CE;A. Emp
+miercoles;F2;2;Mat CCSS II;E;1.1
+miercoles;F3;2;Computación;ACDE;A. Informática
+miercoles;F3;2;Alemán II;ACDE;A. Emp
+miercoles;F3;2;Empresa;ABCDE;2.1
+miercoles;F3;2;Tecnología e Ingeniería II;ABD;3.2
+miercoles;F3;2;Química;AB;3.1
+miercoles;F3;2;Psicología;ADE;1.1
+miercoles;F3;2;Francés II;BCD;1.2
+miercoles;F3;2;Francés II;E;A. T.3
+miercoles;F4;1;Anatomía;BC;4.3
+miercoles;F4;1;Física y Química;B;3.3
+miercoles;F4;1;Física y Química;C;4.1
+miercoles;F4;2;Empresa;E;1.1
+miercoles;F4;2;Geografía;EF;2.2
+miercoles;F5;2;Física;BC;3.1
+miercoles;F5;2;Psicología;BF;2.2
+miercoles;F5;2;Historia del Arte;CEF;1.1
+miercoles;F5;2;Geografía;CE;1.2
+miercoles;F5;2;Computación;F;A. Informática
+miercoles;F6;1;Literatura Universal;DE;4.2
+miercoles;F6;1;Mat CCSS I;D;3.4
+miercoles;F6;1;Computación;E;A. Informática
+miercoles;F6;2;Mat CCSS II;CF;2.2
+miercoles;F6;2;Tecnología e Ingeniería II;C;1.2
+jueves;F2;1;Economía;ABCD;4.3
+jueves;F2;1;Biología y Geología;ABC;3.3
+jueves;F2;1;Computación;ABCD;A. Informática
+jueves;F2;1;Tecnología e Ingeniería I;AB;4.4
+jueves;F2;1;Francés I;BCD;3.4
+jueves;F2;1;Alemán I;BCD;4.1
+jueves;F3;2;Computación;ACDE;A. Informática
+jueves;F3;2;Alemán II;ACDE;A. Emp
+jueves;F3;2;Empresa;ABCDE;2.1
+jueves;F3;2;Tecnología e Ingeniería II;ABD;3.2
+jueves;F3;2;Química;AB;3.1
+jueves;F3;2;Psicología;ADE;1.1
+jueves;F3;2;Francés II;BCD;1.2
+jueves;F3;2;Francés II;E;A. T.3
+jueves;F4;1;Latín I;D;A. Emp
+jueves;F4;1;Economía;D;3.4
+jueves;F4;2;Física;BC;3.1
+jueves;F4;2;Psicología;BF;2.2
+jueves;F4;2;Historia del Arte;CEF;1.1
+jueves;F4;2;Geografía;CE;1.2
+jueves;F4;2;Computación;F;A. Informática
+jueves;F5;1;Literatura Universal;DE;4.2
+jueves;F5;1;Mat CCSS I;D;3.4
+jueves;F5;1;Computación;E;A. Informática
+jueves;F5;2;Biología;AB;3.1
+jueves;F5;2;Dibujo Técnico II;A;A. Dibujo
+jueves;F5;2;Química;AB;3.2
+jueves;F5;2;Empresa;E;1.1
+jueves;F5;2;Geografía;EF;2.2
+viernes;F1;1;Economía;ABCD;4.3
+viernes;F1;1;Biología y Geología;ABC;3.3
+viernes;F1;1;Computación;ABCD;A. Informática
+viernes;F1;1;Tecnología e Ingeniería I;AB;4.4
+viernes;F1;1;Francés I;BCD;3.4
+viernes;F1;1;Alemán I;BCD;4.1
+viernes;F1;2;Matemáticas II;C;1.2
+viernes;F1;2;Latín II;CE;A. Emp
+viernes;F1;2;Mat CCSS II;E;1.1
+viernes;F2;2;Computación;ACDE;A. Informática
+viernes;F2;2;Alemán II;ACDE;A. Emp
+viernes;F2;2;Empresa;ABCDE;2.1
+viernes;F2;2;Tecnología e Ingeniería II;ABD;3.2
+viernes;F2;2;Química;AB;3.1
+viernes;F2;2;Psicología;ADE;1.1
+viernes;F2;2;Francés II;BCD;1.2
+viernes;F2;2;Francés II;E;A. T.3
+viernes;F3;1;Anatomía;BC;4.3
+viernes;F3;1;Física y Química;B;3.3
+viernes;F3;1;Física y Química;C;4.1
+viernes;F3;1;Latín I;D;A. Emp
+viernes;F3;1;Economía;D;3.4
+viernes;F3;2;Mat CCSS II;CF;2.2
+viernes;F3;2;Tecnología e Ingeniería II;C;1.2
+viernes;F4;2;Biología;AB;3.1
+viernes;F4;2;Dibujo Técnico II;A;A. Dibujo
+viernes;F4;2;Química;AB;3.2
+viernes;F5;1;Dibujo Técnico I;A;A. Dibujo
+viernes;F5;1;Tecnología e Ingeniería I;AC;4.4
+viernes;F5;1;Física y Química;BC;3.3
+viernes;F5;1;Biología y Geología;BC;4.1

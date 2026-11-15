@@ -1,0 +1,7 @@
+node_modules/
+dist/
+# Datos reales de menores: NUNCA al repositorio
+horarios_y_alumnos/
+*.xlsx
+*.docx
+graphify-out/

@@ -1,0 +1,14 @@
+# Solo código y la especificación. Nada de datos reales ni imágenes.
+horarios_y_alumnos/*
+!horarios_y_alumnos/Claude outputs/
+horarios_y_alumnos/Claude outputs/*
+!horarios_y_alumnos/Claude outputs/app-confesiones-especificacion.md
+data/
+node_modules/
+dist/
+*.csv
+*.jpeg
+*.jpg
+*.png
+*.xlsx
+*.docx

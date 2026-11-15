@@ -1,0 +1,74 @@
+grupo;franja;lunes;martes;miercoles;jueves;viernes
+1A;F1;Filosofía;Lengua I;Dibujo Técnico I / Tecnología e Ingeniería I;Religión;Economía / Computación / Biología y Geología / Tecnología e Ingeniería I / Francés I
+1A;F2;Matemáticas I;Dibujo Técnico I / Tecnología e Ingeniería I;Economía / Computación / Biología y Geología / Tecnología e Ingeniería I / Francés I;Economía / Computación / Biología y Geología / Tecnología e Ingeniería I / Francés I;Inglés I
+1A;F3;Economía / Computación / Biología y Geología / Tecnología e Ingeniería I / Francés I;Física y Química;Matemáticas I;Matemáticas I;Lengua I
+1A;F4;Lengua I;Inglés I;Inglés I;Física y Química;Matemáticas I
+1A;F5;Dibujo Técnico I / Tecnología e Ingeniería I;Ed. Física;Ed. Física;Lengua I;Dibujo Técnico I / Tecnología e Ingeniería I
+1A;F6;Inglés I;Filosofía;Física y Química;Filosofía;Física y Química
+1B;F1;Inglés I;Matemáticas I;Biología y Geología / Física y Química;Matemáticas I;Economía / Computación / Biología y Geología / Tecnología e Ingeniería I / Francés I / Alemán I
+1B;F2;Filosofía;Biología y Geología / Física y Química;Economía / Computación / Biología y Geología / Tecnología e Ingeniería I / Francés I / Alemán I;Economía / Computación / Biología y Geología / Tecnología e Ingeniería I / Francés I / Alemán I;Inglés I
+1B;F3;Economía / Computación / Biología y Geología / Tecnología e Ingeniería I / Francés I / Alemán I;Inglés I;Lengua I;Filosofía;Física y Química / Anatomía
+1B;F4;Física y Química / Anatomía;Filosofía;Física y Química / Anatomía;Inglés I;Lengua I
+1B;F5;Biología y Geología / Física y Química;Física y Química / Anatomía;Matemáticas I;Ed. Física;Biología y Geología / Física y Química
+1B;F6;Religión;Lengua I;Ed. Física;Lengua I;Matemáticas I
+1C;F1;Filosofía;Inglés I;Biología y Geología / Física y Química / Tecnología e Ingeniería I;Inglés I;Economía / Computación / Biología y Geología / Alemán I / Francés I
+1C;F2;Lengua I;Biología y Geología / Física y Química / Tecnología e Ingeniería I;Economía / Computación / Biología y Geología / Alemán I / Francés I;Economía / Computación / Biología y Geología / Alemán I / Francés I;Matemáticas I
+1C;F3;Economía / Computación / Biología y Geología / Alemán I / Francés I;Matemáticas I;Inglés I;Lengua I;Física y Química / Anatomía
+1C;F4;Física y Química / Anatomía;Ed. Física;Física y Química / Anatomía;Religión;Inglés I
+1C;F5;Biología y Geología / Física y Química / Tecnología e Ingeniería I;Física y Química / Anatomía;Lengua I;Matemáticas I;Biología y Geología / Física y Química / Tecnología e Ingeniería I
+1C;F6;Matemáticas I;Lengua I;Filosofía;Ed. Física;Filosofía
+1D;F1;Literatura Universal / Mat CCSS I;Lengua I;Inglés I;Lengua I;Economía / Computación / Alemán I / Francés I
+1D;F2;Historia Mundo;Filosofía;Economía / Computación / Alemán I / Francés I;Economía / Computación / Alemán I / Francés I;Filosofía
+1D;F3;Economía / Computación / Alemán I / Francés I;Latín I / Economía;Historia Mundo;Inglés I;Latín I / Economía
+1D;F4;Latín I / Economía;Literatura Universal / Mat CCSS I;Filosofía;Latín I / Economía;Ed. Física
+1D;F5;Lengua I;Inglés I;Lengua I;Literatura Universal / Mat CCSS I;Inglés I
+1D;F6;Ed. Física;Religión;Literatura Universal / Mat CCSS I;Historia Mundo;Historia Mundo
+1E;F1;Literatura Universal / Computación;Mat CCSS I;Economía;Economía;Economía
+1E;F2;Historia Mundo;Historia Mundo;Lengua I;Inglés I;Mat CCSS I
+1E;F3;Mat CCSS I;Lengua I;Historia Mundo;Ed. Física;Inglés I
+1E;F4;Inglés I;Literatura Universal / Computación;Filosofía;Lengua I;Religión
+1E;F5;Ed. Física;Filosofía;Inglés I;Literatura Universal / Computación;Lengua I
+1E;F6;Filosofía;Economía;Literatura Universal / Computación;Mat CCSS I;Historia Mundo
+1E;F7;;Tutoría;;;
+2A;F1;Matemáticas II;Matemáticas II;Lengua II;Matemáticas II;Matemáticas II
+2A;F2;Computación / Alemán II / Empresa / Tecnología e Ingeniería II / Química / Psicología;Física;Historia de España;Lengua II;Computación / Alemán II / Empresa / Tecnología e Ingeniería II / Química / Psicología
+2A;F3;Historia de España;Religión;Computación / Alemán II / Empresa / Tecnología e Ingeniería II / Química / Psicología;Computación / Alemán II / Empresa / Tecnología e Ingeniería II / Química / Psicología;Lengua II
+2A;F4;Lengua II;Hª Filosofía;Inglés II;Física;Biología / Química / Dibujo Técnico II
+2A;F5;Inglés II;Historia de España;Física;Biología / Química / Dibujo Técnico II;Hª Filosofía
+2A;F6;Biología / Química / Dibujo Técnico II;Biología / Química / Dibujo Técnico II;Hª Filosofía;Historia de España;Inglés II
+2A;F7;Física;Tutoría;;;
+2B;F1;Lengua II;Matemáticas II;Hª Filosofía;Lengua II;Inglés II
+2B;F2;Francés II / Empresa / Tecnología e Ingeniería II / Química;Lengua II;Inglés II;Historia de España;Francés II / Empresa / Tecnología e Ingeniería II / Química
+2B;F3;Hª Filosofía;Psicología / Física;Francés II / Empresa / Tecnología e Ingeniería II / Química;Francés II / Empresa / Tecnología e Ingeniería II / Química;Historia de España
+2B;F4;Matemáticas II;Historia de España;Historia de España;Psicología / Física;Biología / Química
+2B;F5;Religión;Inglés II;Psicología / Física;Biología / Química;Hª Filosofía
+2B;F6;Biología / Química;Biología / Química;Matemáticas II;Matemáticas II;Lengua II
+2B;F7;Psicología / Física;Tutoría;;;
+2C;F1;Inglés II;Lengua II;Inglés II;Lengua II;Matemáticas II / Latín II
+2C;F2;Computación / Alemán II / Empresa / Francés II;Hª Filosofía;Matemáticas II / Latín II;Historia de España;Computación / Alemán II / Empresa / Francés II
+2C;F3;Matemáticas II / Latín II;Geografía / Física / Historia del Arte;Computación / Alemán II / Empresa / Francés II;Computación / Alemán II / Empresa / Francés II;Mat CCSS II / Tecnología e Ingeniería II
+2C;F4;Mat CCSS II / Tecnología e Ingeniería II;Matemáticas II / Latín II;Lengua II;Geografía / Física / Historia del Arte;Historia de España
+2C;F5;Lengua II;Mat CCSS II / Tecnología e Ingeniería II;Geografía / Física / Historia del Arte;Religión;Hª Filosofía
+2C;F6;Historia de España;Historia de España;Mat CCSS II / Tecnología e Ingeniería II;Hª Filosofía;Inglés II
+2C;F7;Geografía / Física / Historia del Arte;;;;
+2D;F1;Lengua II;Química;Química;Química;Matemáticas II
+2D;F2;Computación / Alemán II / Empresa / Francés II / Psicología / Tecnología e Ingeniería II;Inglés II;Religión;Inglés II;Computación / Alemán II / Empresa / Francés II / Psicología / Tecnología e Ingeniería II
+2D;F3;Hª Filosofía;Hª Filosofía;Computación / Alemán II / Empresa / Francés II / Psicología / Tecnología e Ingeniería II;Computación / Alemán II / Empresa / Francés II / Psicología / Tecnología e Ingeniería II;Hª Filosofía
+2D;F4;Historia de España;Biología;Lengua II;Matemáticas II;Historia de España
+2D;F5;Matemáticas II;Lengua II;Biología;Historia de España;Lengua II
+2D;F6;Química;Matemáticas II;Historia de España;Biología;Biología
+2D;F7;Inglés II;;;;
+2E;F1;Empresa / Geografía;Empresa / Geografía;Lengua II;Inglés II;Mat CCSS II / Latín II
+2E;F2;Computación / Alemán II / Empresa / Francés II / Psicología;Hª Filosofía;Mat CCSS II / Latín II;Hª Filosofía;Computación / Alemán II / Empresa / Francés II / Psicología
+2E;F3;Mat CCSS II / Latín II;Geografía / Historia del Arte;Computación / Alemán II / Empresa / Francés II / Psicología;Computación / Alemán II / Empresa / Francés II / Psicología;Historia de España
+2E;F4;Historia de España;Mat CCSS II / Latín II;Empresa / Geografía;Geografía / Historia del Arte;Lengua II
+2E;F5;Lengua II;Historia de España;Geografía / Historia del Arte;Empresa / Geografía;Inglés II
+2E;F6;Hª Filosofía;Inglés II;Historia de España;Lengua II;Religión
+2E;F7;Geografía / Historia del Arte;;;;
+2F;F1;Geografía;Geografía;Lengua II;Empresa;Inglés II
+2F;F2;Inglés II;Lengua II;Hª Filosofía;Lengua II;Empresa
+2F;F3;Hª Filosofía;Psicología / Historia del Arte / Computación;Religión;Historia de España;Mat CCSS II
+2F;F4;Mat CCSS II;Empresa;Geografía;Psicología / Historia del Arte / Computación;Hª Filosofía
+2F;F5;Empresa;Mat CCSS II;Psicología / Historia del Arte / Computación;Geografía;Historia de España
+2F;F6;Historia de España;Historia de España;Mat CCSS II;Inglés II;Lengua II
+2F;F7;Psicología / Historia del Arte / Computación;;;Tutoría;

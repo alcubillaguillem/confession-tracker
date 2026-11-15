@@ -1,0 +1,23 @@
+curso;codigo;asignatura
+1;TIN;Tecnología e Ingeniería I
+1;D.T;Dibujo Técnico I
+1;C.C;Computación
+1;ECO;Economía
+1;B/G;Biología y Geología
+1;ALE;Alemán I
+1;ANAT;Anatomía
+1;FRA;Francés I
+1;LAT;Latín I
+1;L.U;Literatura Universal
+2;D.T;Dibujo Técnico II
+2;EMP;Empresa
+2;C.C;Computación
+2;ALE;Alemán II
+2;TIN;Tecnología e Ingeniería II
+2;QUI;Química
+2;BIO;Biología
+2;FIS;Física
+2;PSI;Psicología
+2;FRA;Francés II
+2;LAT;Latín II
+2;ART;Historia del Arte
