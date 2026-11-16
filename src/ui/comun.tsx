@@ -7,9 +7,9 @@ import { franjaDe, type Consulta } from '../domain/resolver';
 import { Icono } from './iconos';
 
 export type Cuando = { dia: Dia | ''; franja: string };
-export type Pestana = 'buscar' | 'ruta' | 'mensual' | 'ajustes';
+export type Pestana = 'buscar' | 'mensual' | 'ajustes';
 
-/** Lo que comparten las pantallas (la selección y el día/franja viajan entre Buscar y Ruta). */
+/** Lo que comparten las pantallas. */
 export type Ctx = {
   datos: Datos; estado: Estado; setEstado: Actualizar; alumnos: Alumno[];
   sel: string[]; setSel: (f: (s: string[]) => string[]) => void;
@@ -41,7 +41,7 @@ export function Anillo({ hechos, total }: { hechos: number; total: number }) {
   return (
     <svg class="anillo" viewBox="0 0 36 36" role="img" aria-label={`${hechos} de ${total} confesados`}>
       <circle cx="18" cy="18" r="15" class="anillo-fondo" />
-      <circle cx="18" cy="18" r="15" class="anillo-valor" stroke-dasharray={`${pct * L} ${L}`} transform="rotate(-90 18 18)" />
+      {pct > 0 && <circle cx="18" cy="18" r="15" class="anillo-valor" stroke-dasharray={`${pct * L} ${L}`} transform="rotate(-90 18 18)" />}
       <text x="18" y="21" text-anchor="middle">{Math.round(pct * 100)}%</text>
     </svg>
   );

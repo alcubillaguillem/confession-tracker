@@ -9,7 +9,6 @@ const exps = z.array(z.string().max(12)).max(5000);
 const ESTADO = z.object({
   mensual: z.record(z.string().max(12), z.boolean()), // añadidos (true) o quitados (false) respecto al CSV
   confesados: z.object({ mes: z.string(), exps }),
-  listas: z.record(z.string().max(60), exps),
   avisos: z.object({ mes: z.string(), enviados: z.array(z.string()) }),
   prefs: z.object({ oscuro: z.boolean(), grande: z.boolean() }),
   ocultos: exps.default([]), // "eliminados" por el usuario; el CSV no cambia
@@ -27,7 +26,7 @@ export const mesDe = (f: Date) => `${f.getFullYear()}-${String(f.getMonth() + 1)
 
 export const estadoVacio = (prefs = { oscuro: false, grande: false }): Estado => {
   const mes = mesDe(new Date());
-  return { mensual: {}, confesados: { mes, exps: [] }, listas: {}, avisos: { mes, enviados: [] }, prefs, ocultos: [], apodos: {} };
+  return { mensual: {}, confesados: { mes, exps: [] }, avisos: { mes, enviados: [] }, prefs, ocultos: [], apodos: {} };
 };
 
 /** Las marcas mensuales caducan al cambiar de mes. */
@@ -108,7 +107,6 @@ export const ocultar = (exp: string) => (e: Estado): Estado => {
     ...e, mensual, apodos,
     ocultos: [...new Set([...e.ocultos, exp])],
     confesados: { ...e.confesados, exps: e.confesados.exps.filter((x) => x !== exp) },
-    listas: Object.fromEntries(Object.entries(e.listas).map(([k, v]) => [k, v.filter((x) => x !== exp)])),
   };
 };
 

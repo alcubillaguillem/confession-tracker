@@ -9,10 +9,9 @@ import { ahora, Barra, DIA_LARGO, MenuAlumno, nombreMes, type Ctx, type Cuando, 
 import { Horario } from './Horario';
 import { Icono, type NombreIcono } from './iconos';
 import { Mensual } from './Mensual';
-import { Ruta } from './Ruta';
 
 const NAV: [Pestana, string, NombreIcono][] = [
-  ['buscar', 'Buscar', 'buscar'], ['ruta', 'Ruta', 'ruta'], ['mensual', 'Mensual', 'mensual'], ['ajustes', 'Ajustes', 'ajustes'],
+  ['buscar', 'Buscar', 'buscar'], ['mensual', 'Mensual', 'mensual'], ['ajustes', 'Ajustes', 'ajustes'],
 ];
 
 export function App() {
@@ -79,7 +78,6 @@ export function App() {
   const franja = datos?.franjas.find((f) => f.franja === cuando.franja);
   const subtitulo = {
     buscar: !cuando.dia ? 'Fin de semana' : `${DIA_LARGO[cuando.dia]} · ${franja ? `${franja.franja} · ${franja.inicio}` : 'fuera de franja'}`,
-    ruta: `${sel.length} ${sel.length === 1 ? 'alumno' : 'alumnos'}`,
     mensual: `${nombreMes(estado.confesados.mes)} · ${nHechos} de ${mensuales.length}`,
     ajustes: datos ? `${datos.alumnos.length} alumnos · ${Object.keys(datos.grupos).length} grupos` : 'Sin datos',
   }[actual];
@@ -119,7 +117,6 @@ export function App() {
               ? <Ajustes crudas={crudas} datos={datos} estado={estado} setEstado={setEstado}
                   setCrudas={(c, e) => { setCrudas(c); setEstadoLocal(e); setSel([]); }} />
               : actual === 'buscar' ? <Buscar {...ctx} total={mensuales.length} hechos={nHechos} />
-              : actual === 'ruta' ? <Ruta {...ctx} />
               : <Mensual {...ctx} />}
         </main>
       </div>

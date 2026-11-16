@@ -1,7 +1,6 @@
 // Iconos de trazo (24×24) propios: sin fuentes ni CDNs externos (CSP).
 const TRAZOS = {
   buscar: 'M16 10a6 6 0 1 1-12 0a6 6 0 0 1 12 0zM20 20l-5.6-5.6',
-  ruta: 'M6 21a2 2 0 1 0 0-4a2 2 0 0 0 0 4zM18 7a2 2 0 1 0 0-4a2 2 0 0 0 0 4zM8 19h8.5a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7H16',
   mensual: 'M4 6l1.5 1.5L8 5M4 12l1.5 1.5L8 11M4 18l1.5 1.5L8 17M11 6h9M11 12h9M11 18h9',
   ajustes: 'M4 7h9M17 7h3M4 17h3M11 17h9M15 5v4M9 15v4',
   cruz: 'M12 3v18M7 8h10',

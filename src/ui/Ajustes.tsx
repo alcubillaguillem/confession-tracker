@@ -10,7 +10,7 @@ type Props = {
   setEstado: Actualizar; setCrudas: (c: Crudas | undefined, e: Estado) => void;
 };
 
-const AVISO_CERO = 'Se empezará de cero: se borrarán los datos actuales, las marcas de confesión, los apodos y las listas guardadas. No se puede deshacer. ¿Continuar?';
+const AVISO_CERO = 'Se empezará de cero: se borrarán los datos actuales, las marcas de confesión y los apodos. No se puede deshacer. ¿Continuar?';
 
 export function Ajustes({ crudas, datos, estado, setEstado, setCrudas }: Props) {
   const [errores, setErrores] = useState<string[]>([]);
@@ -59,7 +59,7 @@ export function Ajustes({ crudas, datos, estado, setEstado, setCrudas }: Props) 
   }
 
   async function borrar() {
-    if (!confirm('Se borrarán TODOS los datos de este dispositivo: alumnos, horarios, marcas de confesión, apodos y listas. No se puede deshacer. ¿Continuar?')) return;
+    if (!confirm('Se borrarán TODOS los datos de este dispositivo: alumnos, horarios, marcas de confesión y apodos. No se puede deshacer. ¿Continuar?')) return;
     await borrarTodo();
     setErrores([]); setAvisos([]);
     setCrudas(undefined, estadoVacio());

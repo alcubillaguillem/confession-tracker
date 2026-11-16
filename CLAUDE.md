@@ -13,7 +13,7 @@ Fuente de verdad: `horarios_y_alumnos/Claude outputs/app-confesiones-especificac
 - `src/domain/` lógica pura y testeada: `catalogo.ts`, `esquemas.ts`, `importar.ts`, `resolver.ts`.
 - `src/almacen.ts` IndexedDB (idb-keyval). El CSV importado no se modifica nunca; las marcas y listas viven aparte en `estado`. Importar = empezar de cero.
 - `src/avisos.ts` avisos de mitad de mes, final de mes y enhorabuena (al abrir la app; solo recuentos en las notificaciones).
-- `src/ui/` Preact: `App` (barra inferior en móvil, menú lateral en escritorio), pantallas `Buscar`, `Ruta`, `Mensual`, `Ajustes`, `Horario`; `comun.tsx` (fila con pulsación larga, menú del alumno, anillo); `iconos.tsx` (SVG propios). Paleta morado y dorado en `estilos.css`.
+- `src/ui/` Preact: `App` (barra inferior en móvil, menú lateral en escritorio), pantallas `Buscar` (con `DondeEstan`: selección agrupada por aula), `Mensual`, `Ajustes`, `Horario`; `comun.tsx` (fila con pulsación larga, menú del alumno, anillo); `iconos.tsx` (SVG propios). Paleta morado y dorado en `estilos.css`.
 - Ocultar alumno y apodos viven en `estado` (`almacen.ts`); el CSV nunca cambia.
 - `public/sw.js` offline. Icono: estola dorada sobre morado (`icon.svg` + PNG 180/192/512).
 - Grafo: `graphify update .` (solo código, local). `graphify query "..." --budget 800` para consultar.

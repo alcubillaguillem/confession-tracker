@@ -5,10 +5,10 @@ import type { Alumno } from '../domain/importar';
 import { consultar } from '../domain/resolver';
 import { Anillo, FilaAlumno, SelectorCuando, textoUbicacion, type Ctx } from './comun';
 import { Icono } from './iconos';
-import { Ruta } from './Ruta';
+import { DondeEstan } from './DondeEstan';
 
 export function Buscar(ctx: Ctx & { hechos: number; total: number }) {
-  const { datos, estado, setEstado, alumnos, sel, setSel, cuando, setCuando, abrirMenu, ir, hechos, total } = ctx;
+  const { datos, estado, setEstado, alumnos, sel, setSel, cuando, setCuando, abrirMenu, hechos, total } = ctx;
   const [q, setQ] = useState('');
   const [soloMensual, setSoloMensual] = useState(false);
 
@@ -73,14 +73,14 @@ export function Buscar(ctx: Ctx & { hechos: number; total: number }) {
         {sel.length > 0 && (
           <div class="barra-seleccion">
             <span>{sel.length} {sel.length === 1 ? 'seleccionado' : 'seleccionados'}</span>
-            {buscando && <button class="boton" onClick={() => setSel((s) => [...new Set([...s, ...lista.map((a) => a.expediente)])])}>Todos</button>}
+            {buscando && <button class="boton solo-escritorio" onClick={() => setSel((s) => [...new Set([...s, ...lista.map((a) => a.expediente)])])}>Todos</button>}
             <button class="boton" onClick={() => setSel(() => [])}>Limpiar</button>
-            <button class="boton primario solo-movil" onClick={() => ir('ruta')}><Icono n="ruta" />Ver ruta</button>
+            <button class="boton primario solo-movil" onClick={() => document.getElementById('donde-estan')?.scrollIntoView({ behavior: 'smooth' })}>Ver aulas</button>
           </div>
         )}
       </section>
 
-      <aside class="columna solo-escritorio"><Ruta {...ctx} compacta /></aside>
+      <aside class={`columna${sel.length ? '' : ' solo-escritorio'}`}><DondeEstan {...ctx} /></aside>
     </div>
   );
 }

@@ -59,3 +59,5 @@ Formato y ciclo: skill `flujo-tareas`.
   - Archivos: src/domain/listas.ts, src/domain/importar.ts, src/ui/Ajustes.tsx · Acepta: Excel + 2 Word reales → 298 alumnos sin errores
 - [x] T23 · Enlace con los datos del curso: `public/curso.enc` cifrado (AES-256-GCM) + clave en el `#` del enlace; la app carga al abrirlo
   - Archivos: src/domain/cifrado.ts, src/almacen.ts, src/ui/App.tsx, scripts/preparar-curso.ts · Acepta: enlace abre 298 alumnos; reabrir conserva marcas; clave errónea no toca nada
+- [x] T24 · Quitar la pestaña Ruta y las listas guardadas; «Dónde están» (selección agrupada por aula) dentro de Buscar
+  - Archivos: src/ui/DondeEstan.tsx, src/ui/Buscar.tsx, src/ui/App.tsx, src/almacen.ts

@@ -20,13 +20,13 @@ describe('estado del usuario', () => {
     expect(alternarMensual(luis)(e).mensual).toEqual({});
   });
 
-  it('ocultar borra sus marcas, apodo y listas; mostrar lo recupera', () => {
+  it('ocultar borra sus marcas y su apodo; mostrar lo recupera', () => {
     let e = estadoVacio();
-    e = { ...e, confesados: { ...e.confesados, exps: ['900002'] }, listas: { Nov: ['900001', '900002'] } };
+    e = { ...e, confesados: { ...e.confesados, exps: ['900002'] } };
     e = ponerApodo('900002', 'Luisito')(alternarMensual(luis)(e));
     e = ocultar('900002')(e);
     expect(visibles([ana, luis], e)).toEqual([ana]);
-    expect(e).toMatchObject({ mensual: {}, apodos: {}, confesados: { exps: [] }, listas: { Nov: ['900001'] } });
+    expect(e).toMatchObject({ mensual: {}, apodos: {}, confesados: { exps: [] } });
     expect(visibles([ana, luis], mostrar('900002')(e))).toEqual([ana, luis]);
   });
 });
