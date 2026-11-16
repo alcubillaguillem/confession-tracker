@@ -14,8 +14,6 @@ export function Ajustes({ datos, estado, setEstado }: { datos: Datos; estado: Es
       <ul class="lista">
         <li><label class="fila-ajuste"><Icono n="luna" /><span>Modo oscuro</span>
           <input type="checkbox" role="switch" class="interruptor" checked={estado.prefs.oscuro} onChange={(e) => pref('oscuro', e.currentTarget.checked)} /></label></li>
-        <li><label class="fila-ajuste"><Icono n="letra" /><span>Letra grande</span>
-          <input type="checkbox" role="switch" class="interruptor" checked={estado.prefs.grande} onChange={(e) => pref('grande', e.currentTarget.checked)} /></label></li>
         <li><button class="fila-ajuste" disabled={permiso !== 'default'} onClick={() => void Notification.requestPermission().then(setPermiso)}>
           <Icono n="campana" /><span>Avisos del mes<small>{permiso === 'granted' ? 'Activados' : permiso === 'denied' ? 'Bloqueados en los ajustes del navegador' : 'Mitad de mes, final de mes y enhorabuena'}</small></span></button></li>
       </ul>

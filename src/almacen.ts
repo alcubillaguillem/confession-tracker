@@ -10,7 +10,7 @@ const ESTADO = z.object({
   mensual: z.record(z.string().max(12), z.boolean()), // añadidos (true) o quitados (false) respecto al CSV
   confesados: z.object({ mes: z.string(), exps }),
   avisos: z.object({ mes: z.string(), enviados: z.array(z.string()) }),
-  prefs: z.object({ oscuro: z.boolean(), grande: z.boolean() }),
+  prefs: z.object({ oscuro: z.boolean() }),
   ocultos: exps.default([]), // "eliminados" por el usuario; el CSV no cambia
   apodos: z.record(z.string().max(12), z.string().trim().min(1).max(60)).default({}),
 });
@@ -23,7 +23,7 @@ export type Actualizar = (f: (e: Estado) => Estado) => void;
 
 export const mesDe = (f: Date) => `${f.getFullYear()}-${String(f.getMonth() + 1).padStart(2, '0')}`;
 
-export const estadoVacio = (prefs = { oscuro: false, grande: false }): Estado => {
+export const estadoVacio = (prefs = { oscuro: true }): Estado => { // modo oscuro por defecto
   const mes = mesDe(new Date());
   return { mensual: {}, confesados: { mes, exps: [] }, avisos: { mes, enviados: [] }, prefs, ocultos: [], apodos: {} };
 };
@@ -82,6 +82,12 @@ export const alternarMensual = (a: Alumno) => (e: Estado): Estado => {
   const { [a.expediente]: _, ...resto } = e.mensual;
   const nuevo = !esMensual(a, e);
   return { ...e, mensual: nuevo === a.confesionMensual ? resto : { ...resto, [a.expediente]: nuevo } };
+};
+
+/** Marca o quita «confesado este mes» (las marcas se reinician solas al cambiar de mes). */
+export const alternarConfesado = (exp: string) => (e: Estado): Estado => {
+  const exps = e.confesados.exps;
+  return { ...e, confesados: { ...e.confesados, exps: exps.includes(exp) ? exps.filter((x) => x !== exp) : [...exps, exp] } };
 };
 
 export const ponerApodo = (exp: string, apodo: string) => (e: Estado): Estado => {

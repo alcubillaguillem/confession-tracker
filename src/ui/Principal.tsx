@@ -1,10 +1,14 @@
-import { esMensual } from '../almacen';
+import { useState } from 'preact/hooks';
+import { alternarConfesado, esMensual } from '../almacen';
 import { consultar } from '../domain/resolver';
 import { ahora, Anillo, Barra, FilaAlumno, textoUbicacion, type Ctx } from './comun';
 import { Icono } from './iconos';
 
 /** Dashboard: progreso del mes, avance por grupo y pendientes con dónde están ahora (marcar = confesado). */
+const VISIBLES = 8;
+
 export function Principal({ datos, estado, setEstado, alumnos, abrirMenu }: Ctx) {
+  const [todos, setTodos] = useState(false);
   const hechos = new Set(estado.confesados.exps);
   const mensuales = alumnos.filter((a) => esMensual(a, estado));
   const nHechos = mensuales.filter((a) => hechos.has(a.expediente)).length;
@@ -22,10 +26,7 @@ export function Principal({ datos, estado, setEstado, alumnos, abrirMenu }: Ctx)
     return { g, total: delGrupo.length, hechos: delGrupo.filter((a) => hechos.has(a.expediente)).length };
   }).filter((x) => x.total > 0);
 
-  const alternar = (exp: string) => setEstado((e) => {
-    const exps = e.confesados.exps;
-    return { ...e, confesados: { ...e.confesados, exps: exps.includes(exp) ? exps.filter((x) => x !== exp) : [...exps, exp] } };
-  });
+  const alternar = (exp: string) => setEstado(alternarConfesado(exp));
 
   if (!mensuales.length) {
     return <p class="tarjeta">Todavía no hay nadie en confesión mensual. Añádalos desde <strong>Alumnos</strong> con el botón +.</p>;
@@ -54,12 +55,17 @@ export function Principal({ datos, estado, setEstado, alumnos, abrirMenu }: Ctx)
         <h2>Pendientes {dia && franja ? <span class="tenue">· dónde están ahora</span> : <span class="tenue">· ahora no hay clase</span>}</h2>
         {!pendientes.length ? <p class="vacio">No queda nadie por confesar este mes.</p> : (
           <ul class="lista">
-            {pendientes.map(({ a, c }) => (
+            {(todos ? pendientes : pendientes.slice(0, VISIBLES)).map(({ a, c }) => (
               <FilaAlumno key={a.expediente} a={a} estado={estado} onTap={() => alternar(a.expediente)} onMenu={abrirMenu}
                 sub={`${a.grupo}${c ? ` · ${textoUbicacion(c)}` : ''}`}
                 izquierda={<span class="casilla" aria-hidden="true" />} />
             ))}
           </ul>
+        )}
+        {pendientes.length > VISIBLES && (
+          <button class="boton ver-mas" onClick={() => setTodos(!todos)}>
+            {todos ? 'Ver menos' : `Ver todos (${pendientes.length})`}
+          </button>
         )}
         {confesados.length > 0 && (
           <details class="hechos">

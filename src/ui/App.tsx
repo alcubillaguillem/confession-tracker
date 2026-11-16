@@ -58,7 +58,6 @@ export function App() {
 
   useEffect(() => {
     document.documentElement.classList.toggle('oscuro', !!estado?.prefs.oscuro);
-    document.documentElement.classList.toggle('grande', !!estado?.prefs.grande);
   }, [estado?.prefs]);
 
   if (!estado) return null;

@@ -65,3 +65,5 @@ Formato y ciclo: skill `flujo-tareas`.
   - Archivos: src/ui/{Desbloqueo,Principal,Alumnos,Ajustes,App}.tsx, src/almacen.ts, src/domain/cifrado.ts
 - [x] T26 · Confesión mensual precargada (57, desde la hoja de confesiones vía confesion_mensual.csv); Principal solo confesados/pendientes; menú con animación y deslizar para cerrar; Alumnos sin selector de día; inicio de sesión estándar
   - Archivos: scripts/preparar-curso.ts, src/ui/{Principal,Alumnos,Desbloqueo,App,comun}.tsx, src/ui/estilos.css
+- [x] T27 · «Ver todos» en Pendientes; marcar/quitar confesado desde el menú; modo oscuro por defecto; fuera letra grande; agente `disenador` y pasada de pulido visual
+  - Archivos: src/ui/{Principal,comun,Ajustes,App}.tsx, src/almacen.ts, src/ui/estilos.css, index.html, .claude/agents/disenador.md

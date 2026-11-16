@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { alternarMensual, esMensual, estadoVacio, nombreDe, ocultar, mostrar, ponerApodo, textoBusqueda, visibles } from './almacen';
+import { alternarConfesado, alternarMensual, esMensual, estadoVacio, nombreDe, ocultar, mostrar, ponerApodo, textoBusqueda, visibles } from './almacen';
 import type { Alumno } from './domain/importar';
 
 const ana: Alumno = { expediente: '900001', apellidos: 'Prueba Uno', nombre: 'Ana', grupo: '1B', opcion: '2', optativa: 'ANAT', confesionMensual: true };
@@ -18,6 +18,12 @@ describe('estado del usuario', () => {
     const e = alternarMensual(luis)(estadoVacio());
     expect(esMensual(luis, e)).toBe(true);
     expect(alternarMensual(luis)(e).mensual).toEqual({});
+  });
+
+  it('confesado: marca y desmarca', () => {
+    const e = alternarConfesado('900001')(estadoVacio());
+    expect(e.confesados.exps).toEqual(['900001']);
+    expect(alternarConfesado('900001')(e).confesados.exps).toEqual([]);
   });
 
   it('ocultar borra sus marcas y su apodo; mostrar lo recupera', () => {

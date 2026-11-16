@@ -1,6 +1,6 @@
 import type { ComponentChildren } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { alternarMensual, esMensual, nombreDe, ocultar, ponerApodo, type Actualizar, type Estado } from '../almacen';
+import { alternarConfesado, alternarMensual, esMensual, nombreDe, ocultar, ponerApodo, type Actualizar, type Estado } from '../almacen';
 import { DIAS, type Dia } from '../domain/catalogo';
 import type { Alumno, Datos } from '../domain/importar';
 import { franjaDe, type Consulta } from '../domain/resolver';
@@ -97,6 +97,7 @@ export function MenuAlumno({ a, estado, setEstado, verHorario, cerrar }: MenuPro
   const [apodo, setApodo] = useState(estado.apodos[a.expediente] ?? '');
   useEffect(() => { ref.current?.showModal(); }, []);
   const mensual = esMensual(a, estado);
+  const confesado = estado.confesados.exps.includes(a.expediente);
 
   /** Cierre animado: la hoja baja (o se desvanece en escritorio) y después se desmonta. */
   const salir = (despues?: () => void) => {
@@ -152,6 +153,8 @@ export function MenuAlumno({ a, estado, setEstado, verHorario, cerrar }: MenuPro
         </form>
       ) : (
         <ul class="hoja-acciones">
+          {mensual && <li><button onClick={() => aplicar(alternarConfesado(a.expediente))}><Icono n={confesado ? 'x' : 'check'} class="dorado" />
+            {confesado ? 'Quitar confesado' : 'Marcar como confesado'}</button></li>}
           <li><button onClick={() => aplicar(alternarMensual(a))}><Icono n="cruz" class="dorado" />
             {mensual ? 'Quitar de confesión mensual' : 'Poner en confesión mensual'}</button></li>
           <li><button onClick={() => setEditando(true)}><Icono n="lapiz" />Cambiar nombre</button></li>

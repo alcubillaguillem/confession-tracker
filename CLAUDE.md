@@ -5,7 +5,7 @@ Fuente de verdad: `horarios_y_alumnos/Claude outputs/app-confesiones-especificac
 ## Reglas
 - Seguridad y privacidad: skill `seguridad-privacidad` (obligatoria en todo cambio).
 - Trabajo en tareas pequeñas: skill `flujo-tareas` y `TASKS.md`.
-- Agentes: `planificador` → `implementador` → `tester` → `revisor-seguridad` (`.claude/agents/`).
+- Agentes: `planificador` → `implementador` → `tester` → `revisor-seguridad`, y `disenador` para pulir la interfaz (`.claude/agents/`).
 - Código mínimo: reutiliza lo existente y las dependencias instaladas; no añadas dependencias sin aprobación.
 - Ahorro de tokens: consulta el grafo de Graphify (`graphify-out/`) antes de leer archivos.
 
