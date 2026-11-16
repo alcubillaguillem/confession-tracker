@@ -36,3 +36,16 @@ Formato y ciclo: skill `flujo-tareas`.
 
 ## Cierre
 - [x] T13 · Revisión de seguridad y auditoría · Agente: revisor-seguridad
+
+## Rediseño v2 (morado y dorado)
+- [x] T14 · Estado: alumnos ocultos y apodos (CSV intacto; se borran al importar)
+  - Archivos: src/almacen.ts · Acepta: tests de ocultar/apodo/búsqueda · Agente: implementador
+- [x] T15 · Icono E1 (estola dorada sobre morado) en SVG y PNG 180/192/512
+  - Archivos: public/ · Agente: implementador
+- [x] T16 · Componentes comunes: iconos, anillo, fila de alumno con pulsación larga, menú (mensual, apodo, horario, ocultar)
+  - Archivos: src/ui/iconos.tsx, src/ui/comun.tsx · Agente: implementador
+- [x] T17 · Pantallas Buscar (anillo), Ruta, Mensual y Ajustes con barra inferior / menú lateral
+  - Archivos: src/ui/*.tsx · Agente: implementador
+- [x] T18 · Estilos morado y dorado, modo oscuro, móvil y escritorio
+  - Archivos: src/ui/estilos.css · Agente: implementador
+- [x] T19 · Verificación en navegador y revisión de seguridad · Agente: revisor-seguridad
