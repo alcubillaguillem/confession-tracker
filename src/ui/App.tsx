@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { cargar, esMensual, guardarEstado, visibles, type Actualizar, type Estado } from '../almacen';
+import { cargar, cargarDesdeEnlace, esMensual, guardarEstado, visibles, type Actualizar, type Estado } from '../almacen';
 import { avisoPendiente, notificar, textoAviso } from '../avisos';
 import type { Crudas } from '../domain/esquemas';
 import { construir, type Alumno } from '../domain/importar';
@@ -25,7 +25,23 @@ export function App() {
   const [sel, setSel] = useState<string[]>([]);
   const [cuando, setCuando] = useState<Cuando>({ dia: '', franja: '' });
 
-  useEffect(() => { void cargar().then((r) => { setCrudas(r.crudas); setEstadoLocal(r.estado); }); }, []);
+  useEffect(() => {
+    void (async () => {
+      const r = await cargar();
+      // Enlace del sacerdote: …/#k=<clave>. La clave se quita de la barra de direcciones en cuanto se lee.
+      const clave = new URLSearchParams(location.hash.slice(1)).get('k');
+      if (clave) {
+        history.replaceState(null, '', location.pathname + location.search);
+        const e = await cargarDesdeEnlace(clave, r.estado.prefs);
+        if (typeof e === 'object') {
+          setCrudas(e.crudas); setEstadoLocal(e.estado); setBanner('Datos del curso cargados. Ya puede buscar alumnos.');
+          return;
+        }
+        if (e !== 'mismo') setBanner(e);
+      }
+      setCrudas(r.crudas); setEstadoLocal(r.estado);
+    })();
+  }, []);
   const datos = useMemo(() => (crudas ? construir(crudas).datos : undefined), [crudas]);
   useEffect(() => { if (datos) setCuando(ahora(datos)); }, [datos]);
 

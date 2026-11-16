@@ -4,14 +4,17 @@ description: Procedimiento anual para convertir las fotos de horarios/desdobles 
 ---
 # Preparar los datos de un curso
 
-Se hace **una vez al año** (y si hay cambios de horario a mitad de curso). Dos caminos con el mismo formato y las mismas validaciones:
+Se hace **una vez al año** (y si hay cambios a mitad de curso). **El sacerdote no importa nada**: recibe un enlace y,
+al pulsarlo, la app ya tiene todos los datos.
 
-- **A. El sacerdote, solo, desde la app** (el habitual; lo explica la guía para sacerdotes): pasa las fotos a una IA con
-  `docs/prompt-transcribir-horarios.md` → recibe `horarios.xlsx` (7 hojas) → en la app, **Ajustes → Importar datos**, elige a la vez
-  ese Excel y las listas del colegio (.docx). La app lee las listas en el dispositivo, deduce la opción si la lista no la trae
-  y avisa de bajas, aulas que faltan y horarios ambiguos.
-- **B. Preparado por nosotros** (pasos 1–5 de abajo): el resultado es un único `confession-tracker-<curso>.json`
-  que el sacerdote importa en **Ajustes → Restaurar copia**.
+**Cómo funciona el enlace**: los datos validados se cifran (AES-256-GCM) en `public/curso.enc`, que se publica con la web.
+La clave está en `horarios_y_alumnos/<curso>/clave.txt` (fuera de git) y viaja solo en el enlace, tras `#`
+(`…/confession-tracker/#k=<clave>`), que el navegador nunca envía al servidor. Al abrirlo, la app descifra, valida, guarda
+los datos en el dispositivo y borra la clave de la barra de direcciones. Reabrir el mismo enlace con los mismos datos no
+borra nada; si hay datos nuevos publicados, se cargan (empezando de cero).
+
+Alternativas que siguen funcionando: importar en la app (Ajustes → Importar datos: Excel de horarios + listas .docx) o
+restaurar el `.json` (Ajustes → Restaurar copia).
 
 ## 0. Privacidad (obligatorio)
 - Todo vive en `horarios_y_alumnos/<curso>/`, excluido de git y de Graphify. Nunca se sube a GitHub.
@@ -37,7 +40,8 @@ Partir de la carpeta `tablas/` del curso anterior: suele cambiar solo `horarios`
 
 ## 3. Generar y validar
 ```bash
-npm run preparar -- horarios_y_alumnos/<curso>
+npm run preparar -- horarios_y_alumnos/<curso>             # solo validar
+npm run preparar -- horarios_y_alumnos/<curso> --publicar  # validar, cifrar en public/curso.enc y mostrar el enlace
 ```
 - Si una lista no trae columna de opción (1ºE), se deduce del horario del grupo: la única opción cuyas 3 asignaturas aparecen en él.
 - El script lee las listas (excluye las filas con «BAJA»), valida todo con las reglas de la app y muestra recuentos por grupo.
@@ -47,11 +51,13 @@ npm run preparar -- horarios_y_alumnos/<curso>
 ## 4. Comprobar a mano (2 minutos)
 Comparar 3 alumnos al azar de distintos grupos con su horario en papel (vista Horario de la app, tras importar en un navegador de prueba).
 
-## 5. Entregar
-Enviar `horarios_y_alumnos/<curso>/confession-tracker-<curso>.json` al sacerdote por chat privado con este texto:
-> Padre, le paso los datos del curso. En la app: Ajustes → Restaurar copia → elija este archivo. Después borre el archivo del chat.
+## 5. Publicar y entregar
+1. `npm run preparar -- horarios_y_alumnos/<curso> --publicar` (exige 0 errores y 0 horarios ambiguos).
+2. Comprobar que `public/curso.enc` no contiene texto legible; commit y push de `public/curso.enc` (el despliegue lo publica).
+3. Enviar al sacerdote, por chat privado, el enlace que muestra el script:
+   > Padre, este es su enlace de Confession Tracker. Ábralo en el móvil y la app quedará lista. No lo reenvíe a nadie: da acceso a los datos.
 
-Importar empieza de cero: se borran las marcas y listas del curso anterior (es lo esperado al empezar curso).
+Curso nuevo = carpeta nueva = clave nueva (se genera sola): el enlace del año anterior deja de abrir los datos nuevos.
 
 ## Altas y bajas a mitad de curso
-Pedir la lista actualizada, sustituirla en `listas/` y repetir los pasos 3 y 5. Igualmente empieza de cero (marcas incluidas).
+Pedir la lista actualizada, sustituirla en `listas/` y repetir los pasos 3 y 5 con la misma carpeta (misma clave): el sacerdote vuelve a pulsar su enlace de siempre. Al cargarse datos nuevos, la app empieza de cero (marcas incluidas).

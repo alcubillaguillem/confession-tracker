@@ -5,7 +5,8 @@ description: Requisitos obligatorios de seguridad y privacidad (datos de menores
 # Seguridad y privacidad
 
 ## Reglas
-1. **Cero red**: nada de `fetch`, `XMLHttpRequest`, `WebSocket`, `sendBeacon`, analítica, fuentes o CDNs externos. Todo se sirve desde el mismo origen.
+1. **Cero red**: nada de `fetch`, `XMLHttpRequest`, `WebSocket`, `sendBeacon`, analítica, fuentes o CDNs externos. Todo se sirve desde el mismo origen. Única excepción: `fetch('./curso.enc')` (mismo origen) en `almacen.ts`.
+9. **Datos del curso publicados**: solo cifrados (AES-256-GCM, `src/domain/cifrado.ts`) en `public/curso.enc`. La clave vive en `horarios_y_alumnos/<curso>/clave.txt` (fuera de git) y en el enlace tras `#`; nunca en el código, el repositorio ni los logs.
 2. **CSP estricta** (`vite.config.ts`): `default-src 'none'`, sin `unsafe-inline` ni `unsafe-eval`. No añadir orígenes.
 3. **Sin inyección de HTML**: prohibidos `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `dangerouslySetInnerHTML`, `eval`, `new Function`, `document.write`. Solo JSX (escapa el texto).
 4. **Estilos**: solo en `src/ui/estilos.css` mediante clases; nada de atributos `style` (los bloquea la CSP).
@@ -17,7 +18,7 @@ description: Requisitos obligatorios de seguridad y privacidad (datos de menores
 ## Comprobación (debe salir vacío, salvo el último comando)
 ```bash
 grep -rnE "innerHTML|outerHTML|insertAdjacentHTML|dangerouslySetInnerHTML|eval\(|new Function|document\.write" src
-grep -rnE "fetch\(|XMLHttpRequest|WebSocket|sendBeacon|localStorage|console\." src --include=*.ts --include=*.tsx | grep -v "\.test\.ts"
+grep -rnE "fetch\(|XMLHttpRequest|WebSocket|sendBeacon|localStorage|console\." src --include=*.ts --include=*.tsx | grep -v "\.test\.ts" | grep -v "fetch('./curso.enc'"
 grep -rn "style=" src
 npm audit
 ```

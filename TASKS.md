@@ -57,3 +57,5 @@ Formato y ciclo: skill `flujo-tareas`.
   - Archivos: .claude/skills/preparar-curso/, docs/prompt-transcribir-horarios.md
 - [x] T22 · La app importa las listas del colegio (.docx) junto al Excel de horarios; deduce la opción si falta; avisa de horarios ambiguos
   - Archivos: src/domain/listas.ts, src/domain/importar.ts, src/ui/Ajustes.tsx · Acepta: Excel + 2 Word reales → 298 alumnos sin errores
+- [x] T23 · Enlace con los datos del curso: `public/curso.enc` cifrado (AES-256-GCM) + clave en el `#` del enlace; la app carga al abrirlo
+  - Archivos: src/domain/cifrado.ts, src/almacen.ts, src/ui/App.tsx, scripts/preparar-curso.ts · Acepta: enlace abre 298 alumnos; reabrir conserva marcas; clave errónea no toca nada

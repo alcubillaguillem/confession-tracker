@@ -1,17 +1,19 @@
 // Prepara los datos de un curso sin pasar por la app (procedimiento: skill `preparar-curso`).
-//   npm run preparar -- horarios_y_alumnos/2026-27
+//   npm run preparar -- horarios_y_alumnos/2026-27 [--publicar]
 // Entrada:  <carpeta>/listas/*.docx (listas del colegio) y <carpeta>/tablas/*.csv (las otras 7 tablas).
 // Salida:   <carpeta>/alumnos.csv (para revisar) y <carpeta>/confession-tracker-<curso>.json (Ajustes → Restaurar copia).
+// --publicar: además cifra el curso en public/curso.enc y muestra el enlace con la clave (guardada en <carpeta>/clave.txt).
 // Usa el mismo lector y las mismas validaciones que la app. No envía nada a ningún sitio.
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { estadoVacio } from '../src/almacen.ts';
+import { cifrar, nuevaClave } from '../src/domain/cifrado.ts';
 import { TABLAS, type Crudas } from '../src/domain/esquemas.ts';
 import { construir, leerCsv } from '../src/domain/importar.ts';
 import { alumnosDeDocx, leerZip } from '../src/domain/listas.ts';
 import { avisosAmbiguos } from '../src/domain/resolver.ts';
 
-const carpeta = process.argv[2];
+const [carpeta, opcion] = process.argv.slice(2);
 if (!carpeta) throw new Error('Uso: npm run preparar -- <carpeta-del-curso>');
 
 const avisos: string[] = [];
@@ -43,3 +45,17 @@ writeFileSync(join(carpeta, 'alumnos.csv'), [cab, ...alumnos.map((a) => cab.spli
 const salida = join(carpeta, `confession-tracker-${basename(carpeta)}.json`);
 writeFileSync(salida, JSON.stringify({ version: 1, crudas, estado: estadoVacio() }));
 console.log(`\nOK: ${r.datos.alumnos.length} alumnos, ${Object.keys(r.datos.grupos).length} grupos, ${ambiguos.length} horarios ambiguos.\nEntregable: ${salida}`);
+
+if (opcion === '--publicar') {
+  if (ambiguos.length) throw new Error('Hay horarios ambiguos: corrígelos antes de publicar.');
+  // Misma clave durante todo el curso: el sacerdote vuelve a pulsar el mismo enlace tras una actualización.
+  const rutaClave = join(carpeta, 'clave.txt');
+  if (!existsSync(rutaClave)) writeFileSync(rutaClave, nuevaClave());
+  const clave = readFileSync(rutaClave, 'utf8').trim();
+  const id = `${basename(carpeta)}@${new Date().toISOString()}`;
+  writeFileSync('public/curso.enc', await cifrar({ version: 1, id, crudas }, clave));
+  console.log(`
+Publicado cifrado en public/curso.enc (${id}).
+Enlace para el sacerdote (no lo compartas con nadie más):
+https://alcubillaguillem.github.io/confession-tracker/#k=${clave}`);
+}

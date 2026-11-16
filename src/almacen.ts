@@ -1,5 +1,6 @@
-import { clear, get, set } from 'idb-keyval';
+import { clear, del, get, set } from 'idb-keyval';
 import { z } from 'zod';
+import { descifrar } from './domain/cifrado.ts';
 import { TABLAS, type Crudas } from './domain/esquemas.ts';
 import { construir, MAX_BYTES, type Alumno } from './domain/importar.ts';
 
@@ -16,6 +17,7 @@ const ESTADO = z.object({
 });
 const CRUDAS = z.partialRecord(z.enum(TABLAS), z.array(z.record(z.string(), z.string())).max(5000));
 const COPIA = z.object({ version: z.literal(1), crudas: CRUDAS, estado: ESTADO });
+const ENLACE = z.object({ version: z.literal(1), id: z.string().max(100), crudas: CRUDAS });
 
 export type Estado = z.infer<typeof ESTADO>;
 /** Actualización funcional: evita perder cambios con clics rápidos. */
@@ -51,7 +53,23 @@ export async function reemplazarDatos(crudas: Crudas, prefs: Estado['prefs']): P
   const estado = estadoVacio(prefs);
   await set('crudas', crudas);
   await set('estado', estado);
+  await del('curso');
   return estado;
+}
+
+/** Datos del curso publicados cifrados (./curso.enc), abiertos con la clave del enlace. Mismo curso ya cargado → no toca nada. */
+export async function cargarDesdeEnlace(clave: string, prefs: Estado['prefs']): Promise<{ crudas: Crudas; estado: Estado } | 'mismo' | string> {
+  let json: unknown;
+  try {
+    const res = await fetch('./curso.enc', { cache: 'no-store' });
+    json = await descifrar(new Uint8Array(await res.arrayBuffer()), clave);
+  } catch { return 'No se han podido abrir los datos del curso: el enlace no es válido o no hay conexión.'; }
+  const r = ENLACE.safeParse(json);
+  if (!r.success || construir(r.data.crudas).errores.length) return 'Los datos del curso publicados no son válidos.';
+  if ((await get('curso')) === r.data.id) return 'mismo';
+  const estado = await reemplazarDatos(r.data.crudas, prefs);
+  await set('curso', r.data.id);
+  return { crudas: r.data.crudas, estado };
 }
 
 export const borrarTodo = () => clear();
@@ -109,5 +127,6 @@ export async function leerCopia(f: File): Promise<{ crudas: Crudas; estado: Esta
   if (errores.length) return `Copia con datos no válidos: ${errores[0]}`;
   await set('crudas', r.data.crudas);
   await set('estado', alDia(r.data.estado));
+  await del('curso');
   return { crudas: r.data.crudas, estado: alDia(r.data.estado) };
 }
