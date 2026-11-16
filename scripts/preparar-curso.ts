@@ -1,7 +1,7 @@
 // Prepara los datos de un curso para la app (procedimiento: skill `preparar-curso`).
 //   npm run preparar -- horarios_y_alumnos/2026-27 [--opcion 1E=4 ...]
 // Entrada:  <carpeta>/listas/*.docx (listas del colegio) y <carpeta>/tablas/*.csv (las otras 7 tablas).
-// Salida:   <carpeta>/alumnos.csv (para revisar) y <carpeta>/donde-esta-<curso>.json (Ajustes → Restaurar copia).
+// Salida:   <carpeta>/alumnos.csv (para revisar) y <carpeta>/confession-tracker-<curso>.json (Ajustes → Restaurar copia).
 // Valida con las mismas reglas que la app. No envía nada a ningún sitio.
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
@@ -89,6 +89,6 @@ for (const a of dudosos) console.log(`  aviso  horario ambiguo: expediente ${a.e
 
 const cab = 'expediente;apellidos;nombre;grupo;opcion;optativa;confesion_mensual';
 writeFileSync(join(carpeta, 'alumnos.csv'), [cab, ...alumnos.map((a) => cab.split(';').map((k) => a[k]).join(';'))].join('\n') + '\n');
-const salida = join(carpeta, `donde-esta-${basename(carpeta)}.json`);
+const salida = join(carpeta, `confession-tracker-${basename(carpeta)}.json`);
 writeFileSync(salida, JSON.stringify({ version: 1, crudas, estado: estadoVacio() }));
 console.log(`\nOK: ${d.alumnos.length} alumnos, ${Object.keys(d.grupos).length} grupos, ${dudosos.length} horarios ambiguos.\nEntregable: ${salida}`);

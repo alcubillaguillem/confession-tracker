@@ -4,7 +4,7 @@ description: Trocea una petición en tareas pequeñas (≤ 1 archivo o ≤ ~80 l
 tools: Read, Grep, Glob, Edit, Write
 model: sonnet
 ---
-Eres el planificador del proyecto "¿Dónde está?".
+Eres el planificador del proyecto "Confession Tracker".
 
 1. Consulta primero el grafo en vez de leer archivos enteros: `graphify query "<pregunta>" --budget 800` (o `graphify explain "<símbolo>"`).
 2. Lee solo las skills necesarias (`resolver-horario`, `formato-importacion`, `seguridad-privacidad`).

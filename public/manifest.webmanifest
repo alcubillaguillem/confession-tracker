@@ -1,6 +1,6 @@
 {
-  "name": "¿Dónde está?",
-  "short_name": "Dónde está",
+  "name": "Confession Tracker",
+  "short_name": "Confession Tracker",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

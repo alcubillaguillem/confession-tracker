@@ -82,7 +82,7 @@ export function App() {
   return (
     <div class="app">
       <aside class="lateral">
-        <div class="marca"><img src="./icon.svg" alt="" width="32" height="32" />¿Dónde está?</div>
+        <div class="marca"><img src="./icon.svg" alt="" width="32" height="32" />Confession Tracker</div>
         <nav class="nav-lateral" aria-label="Secciones">{botonesNav}</nav>
         {mensuales.length > 0 && (
           <div class="mini-progreso">

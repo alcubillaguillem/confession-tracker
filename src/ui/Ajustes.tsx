@@ -42,7 +42,7 @@ export function Ajustes({ crudas, datos, estado, setEstado, setCrudas }: Props) 
     const url = URL.createObjectURL(copiaJson(crudas ?? {}, estado));
     const a = document.createElement('a');
     a.href = url;
-    a.download = `donde-esta-copia-${estado.confesados.mes}.json`;
+    a.download = `confession-tracker-copia-${estado.confesados.mes}.json`;
     a.click();
     URL.revokeObjectURL(url);
   }

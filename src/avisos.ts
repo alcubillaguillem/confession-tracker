@@ -19,6 +19,6 @@ export const textoAviso = (a: Aviso, total: number, pendientes: number) => ({
 export async function notificar(texto: string) {
   if (!('Notification' in globalThis) || Notification.permission !== 'granted') return;
   const reg = await navigator.serviceWorker?.getRegistration();
-  if (reg) await reg.showNotification('¿Dónde está?', { body: texto, icon: './icon.svg' });
-  else new Notification('¿Dónde está?', { body: texto });
+  if (reg) await reg.showNotification('Confession Tracker', { body: texto, icon: './icon.svg' });
+  else new Notification('Confession Tracker', { body: texto });
 }

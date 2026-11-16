@@ -5,7 +5,7 @@ description: Procedimiento anual para convertir las fotos de horarios/desdobles 
 # Preparar los datos de un curso
 
 Se hace **una vez al año** (y si hay cambios de horario a mitad de curso). Resultado: un único archivo
-`donde-esta-<curso>.json` que el sacerdote importa en la app (**Ajustes → Restaurar copia**).
+`confession-tracker-<curso>.json` que el sacerdote importa en la app (**Ajustes → Restaurar copia**).
 
 ## 0. Privacidad (obligatorio)
 - Todo vive en `horarios_y_alumnos/<curso>/`, excluido de git y de Graphify. Nunca se sube a GitHub.
@@ -42,7 +42,7 @@ npm run preparar -- horarios_y_alumnos/<curso> --opcion 1E=4
 Comparar 3 alumnos al azar de distintos grupos con su horario en papel (vista Horario de la app, tras importar en un navegador de prueba).
 
 ## 5. Entregar
-Enviar `horarios_y_alumnos/<curso>/donde-esta-<curso>.json` al sacerdote por chat privado con este texto:
+Enviar `horarios_y_alumnos/<curso>/confession-tracker-<curso>.json` al sacerdote por chat privado con este texto:
 > Padre, le paso los datos del curso. En la app: Ajustes → Restaurar copia → elija este archivo. Después borre el archivo del chat.
 
 Importar empieza de cero: se borran las marcas y listas del curso anterior (es lo esperado al empezar curso).

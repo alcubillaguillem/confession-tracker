@@ -1,4 +1,4 @@
-# ¿Dónde está? — PWA localizador de alumnos
+# Confession Tracker — PWA localizador de alumnos
 
 Fuente de verdad: `horarios_y_alumnos/Claude outputs/app-confesiones-especificacion.md`. Las imágenes, XLSX y DOCX sueltos de esa carpeta no se usan directamente: cada curso se prepara en `horarios_y_alumnos/<curso>/` con la skill `preparar-curso`.
 
