@@ -1,5 +1,5 @@
 import { useState } from 'preact/hooks';
-import { borrarTodo, copiaJson, estadoVacio, leerCopia, mostrar, nombreDe, reemplazarDatos, type Actualizar, type Estado } from '../almacen';
+import { borrarTodo, cargarDesdeEnlace, copiaJson, estadoVacio, leerCopia, mostrar, nombreDe, reemplazarDatos, type Actualizar, type Estado } from '../almacen';
 import type { Crudas } from '../domain/esquemas';
 import { construir, leerArchivos, type Datos } from '../domain/importar';
 import { avisosAmbiguos } from '../domain/resolver';
@@ -16,7 +16,17 @@ export function Ajustes({ crudas, datos, estado, setEstado, setCrudas }: Props) 
   const [errores, setErrores] = useState<string[]>([]);
   const [avisos, setAvisos] = useState<string[]>([]);
   const [permiso, setPermiso] = useState(() => ('Notification' in globalThis ? Notification.permission : 'denied'));
+  const [enlace, setEnlace] = useState('');
   const ocultos = datos?.alumnos.filter((a) => estado.ocultos.includes(a.expediente)) ?? [];
+
+  /** Enlace pegado a mano (iPhone: la app instalada no comparte datos con Safari ni recibe el enlace). */
+  async function abrirEnlace() {
+    const clave = enlace.match(/[#&]k=([\w-]+)/)?.[1] ?? (/^[\w-]{43}$/.test(enlace.trim()) ? enlace.trim() : '');
+    if (!clave) return setErrores(['Pegue el enlace completo que le enviaron (termina en #k=…).']);
+    const r = await cargarDesdeEnlace(clave, estado.prefs);
+    if (typeof r === 'object') { setErrores([]); setEnlace(''); setCrudas(r.crudas, r.estado); }
+    else setErrores(r === 'mismo' ? [] : [r]);
+  }
 
   async function importar(files: File[]) {
     if (!files.length) return;
@@ -59,7 +69,14 @@ export function Ajustes({ crudas, datos, estado, setEstado, setCrudas }: Props) 
 
   return (
     <section class="ajustes">
-      {!datos && <p class="tarjeta">Importa los 8 CSV (separados por ;) o un Excel con 8 hojas para empezar.</p>}
+      <form class={`tarjeta${datos ? '' : ' destacada'}`} onSubmit={(e) => { e.preventDefault(); void abrirEnlace(); }}>
+        <label for="enlace">{datos ? 'Actualizar con su enlace' : 'Pegue aquí el enlace que le enviaron para cargar los datos del curso'}</label>
+        <div class="fila-form">
+          <input id="enlace" type="text" autoComplete="off" spellcheck={false} placeholder="https://…#k=…" value={enlace} maxLength={300}
+            onInput={(e) => setEnlace(e.currentTarget.value)} />
+          <button type="submit" class="boton primario">Abrir</button>
+        </div>
+      </form>
 
       <h2 class="seccion">Datos</h2>
       <ul class="lista">
