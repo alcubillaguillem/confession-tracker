@@ -1,46 +1,30 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { cargar, cargarDesdeEnlace, esMensual, guardarEstado, visibles, type Actualizar, type Estado } from '../almacen';
+import { cargar, esMensual, guardarEstado, visibles, type Actualizar, type Estado } from '../almacen';
 import { avisoPendiente, notificar, textoAviso } from '../avisos';
 import type { Crudas } from '../domain/esquemas';
 import { construir, type Alumno } from '../domain/importar';
 import { Ajustes } from './Ajustes';
-import { Buscar } from './Buscar';
+import { Alumnos } from './Alumnos';
 import { ahora, Barra, DIA_LARGO, MenuAlumno, nombreMes, type Ctx, type Cuando, type Pestana } from './comun';
+import { Desbloqueo } from './Desbloqueo';
 import { Horario } from './Horario';
 import { Icono, type NombreIcono } from './iconos';
-import { Mensual } from './Mensual';
+import { Principal } from './Principal';
 
 const NAV: [Pestana, string, NombreIcono][] = [
-  ['buscar', 'Buscar', 'buscar'], ['mensual', 'Mensual', 'mensual'], ['ajustes', 'Ajustes', 'ajustes'],
+  ['principal', 'Principal', 'principal'], ['alumnos', 'Alumnos', 'alumnos'], ['ajustes', 'Ajustes', 'ajustes'],
 ];
 
 export function App() {
   const [crudas, setCrudas] = useState<Crudas>();
   const [estado, setEstadoLocal] = useState<Estado>();
-  const [pestana, setPestana] = useState<Pestana>('buscar');
+  const [pestana, setPestana] = useState<Pestana>('principal');
   const [horarioDe, setHorarioDe] = useState<Alumno | null>(null);
   const [menuDe, setMenuDe] = useState<Alumno | null>(null);
   const [banner, setBanner] = useState('');
-  const [sel, setSel] = useState<string[]>([]);
   const [cuando, setCuando] = useState<Cuando>({ dia: '', franja: '' });
 
-  useEffect(() => {
-    void (async () => {
-      const r = await cargar();
-      // Enlace del sacerdote: …/#k=<clave>. La clave se quita de la barra de direcciones en cuanto se lee.
-      const clave = new URLSearchParams(location.hash.slice(1)).get('k');
-      if (clave) {
-        history.replaceState(null, '', location.pathname + location.search);
-        const e = await cargarDesdeEnlace(clave, r.estado.prefs);
-        if (typeof e === 'object') {
-          setCrudas(e.crudas); setEstadoLocal(e.estado); setBanner('Datos del curso cargados. Ya puede buscar alumnos.');
-          return;
-        }
-        if (e !== 'mismo') setBanner(e);
-      }
-      setCrudas(r.crudas); setEstadoLocal(r.estado);
-    })();
-  }, []);
+  useEffect(() => { void cargar().then((r) => { setCrudas(r.crudas); setEstadoLocal(r.estado); }); }, []);
   const datos = useMemo(() => (crudas ? construir(crudas).datos : undefined), [crudas]);
   useEffect(() => { if (datos) setCuando(ahora(datos)); }, [datos]);
 
@@ -72,23 +56,19 @@ export function App() {
   }, [estado?.prefs]);
 
   if (!estado) return null;
-  const actual: Pestana = datos ? pestana : 'ajustes';
+  if (!datos) return <Desbloqueo prefs={estado.prefs} listo={(c, e) => { setCrudas(c); setEstadoLocal(e); }} />;
+
   const ir = (p: Pestana) => { setPestana(p); setHorarioDe(null); };
-
-  const franja = datos?.franjas.find((f) => f.franja === cuando.franja);
+  const franja = datos.franjas.find((f) => f.franja === cuando.franja);
   const subtitulo = {
-    buscar: !cuando.dia ? 'Fin de semana' : `${DIA_LARGO[cuando.dia]} · ${franja ? `${franja.franja} · ${franja.inicio}` : 'fuera de franja'}`,
-    mensual: `${nombreMes(estado.confesados.mes)} · ${nHechos} de ${mensuales.length}`,
-    ajustes: datos ? `${datos.alumnos.length} alumnos · ${Object.keys(datos.grupos).length} grupos` : 'Sin datos',
-  }[actual];
-
-  const ctx: Ctx | undefined = datos && {
-    datos, estado, setEstado, alumnos, sel, setSel: (f) => setSel(f), cuando, setCuando, abrirMenu: setMenuDe, ir,
-  };
+    principal: `${nombreMes(estado.confesados.mes)} · ${nHechos} de ${mensuales.length} confesados`,
+    alumnos: !cuando.dia ? 'Fin de semana' : `${DIA_LARGO[cuando.dia]} · ${franja ? `${franja.franja} · ${franja.inicio}` : 'fuera de franja'}`,
+    ajustes: `${datos.alumnos.length} alumnos · ${Object.keys(datos.grupos).length} grupos`,
+  }[pestana];
+  const ctx: Ctx = { datos, estado, setEstado, alumnos, cuando, setCuando, abrirMenu: setMenuDe };
 
   const botonesNav = NAV.map(([id, txt, ico]) => (
-    <button key={id} class={actual === id ? 'activa' : ''} aria-current={actual === id ? 'page' : undefined}
-      disabled={!datos && id !== 'ajustes'} onClick={() => ir(id)}>
+    <button key={id} class={pestana === id ? 'activa' : ''} aria-current={pestana === id ? 'page' : undefined} onClick={() => ir(id)}>
       <Icono n={ico} /><span>{txt}</span>
     </button>
   ));
@@ -107,17 +87,15 @@ export function App() {
 
       <div class="cuerpo">
         <header class="cabecera">
-          <h1>{horarioDe ? 'Horario' : NAV.find(([id]) => id === actual)![1]}</h1>
+          <h1>{horarioDe ? 'Horario' : NAV.find(([id]) => id === pestana)![1]}</h1>
           <p>{subtitulo}</p>
         </header>
         {banner && <p class="banner" role="status">{banner}<button class="icono-btn" aria-label="Cerrar aviso" onClick={() => setBanner('')}><Icono n="x" /></button></p>}
         <main class="contenido">
-          {horarioDe && ctx ? <Horario datos={ctx.datos} estado={estado} alumno={horarioDe} volver={() => setHorarioDe(null)} />
-            : actual === 'ajustes' || !ctx
-              ? <Ajustes crudas={crudas} datos={datos} estado={estado} setEstado={setEstado}
-                  setCrudas={(c, e) => { setCrudas(c); setEstadoLocal(e); setSel([]); }} />
-              : actual === 'buscar' ? <Buscar {...ctx} total={mensuales.length} hechos={nHechos} />
-              : <Mensual {...ctx} />}
+          {horarioDe ? <Horario datos={datos} estado={estado} alumno={horarioDe} volver={() => setHorarioDe(null)} />
+            : pestana === 'principal' ? <Principal {...ctx} />
+            : pestana === 'alumnos' ? <Alumnos {...ctx} />
+            : <Ajustes datos={datos} estado={estado} setEstado={setEstado} />}
         </main>
       </div>
 

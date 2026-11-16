@@ -7,14 +7,13 @@ import { franjaDe, type Consulta } from '../domain/resolver';
 import { Icono } from './iconos';
 
 export type Cuando = { dia: Dia | ''; franja: string };
-export type Pestana = 'buscar' | 'mensual' | 'ajustes';
+export type Pestana = 'principal' | 'alumnos' | 'ajustes';
 
 /** Lo que comparten las pantallas. */
 export type Ctx = {
   datos: Datos; estado: Estado; setEstado: Actualizar; alumnos: Alumno[];
-  sel: string[]; setSel: (f: (s: string[]) => string[]) => void;
   cuando: Cuando; setCuando: (c: Cuando) => void;
-  abrirMenu: (a: Alumno) => void; ir: (p: Pestana) => void;
+  abrirMenu: (a: Alumno) => void;
 };
 
 /** Al abrir: hoy y la franja actual; fuera de franja, sin franja; en fin de semana, sin día. */

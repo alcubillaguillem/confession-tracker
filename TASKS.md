@@ -61,3 +61,5 @@ Formato y ciclo: skill `flujo-tareas`.
   - Archivos: src/domain/cifrado.ts, src/almacen.ts, src/ui/App.tsx, scripts/preparar-curso.ts · Acepta: enlace abre 298 alumnos; reabrir conserva marcas; clave errónea no toca nada
 - [x] T24 · Quitar la pestaña Ruta y las listas guardadas; «Dónde están» (selección agrupada por aula) dentro de Buscar
   - Archivos: src/ui/DondeEstan.tsx, src/ui/Buscar.tsx, src/ui/App.tsx, src/almacen.ts
+- [x] T25 · Contraseña al abrir (datos cifrados en la app), pestañas Principal (dashboard) / Alumnos (A-Z, de 20 en 20, buscador) / Ajustes; fuera importar, exportar, restaurar, borrar y enlace
+  - Archivos: src/ui/{Desbloqueo,Principal,Alumnos,Ajustes,App}.tsx, src/almacen.ts, src/domain/cifrado.ts

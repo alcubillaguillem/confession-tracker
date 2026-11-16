@@ -1,9 +1,6 @@
 import Papa from 'papaparse';
-import { canon, DIAS, norm, type Dia } from './catalogo.ts';
-import { ESQUEMAS, TABLAS, type Crudas, type Fila, type Tabla } from './esquemas.ts';
-import { alumnosDeDocx, leerZip } from './listas.ts';
-
-export const MAX_BYTES = 5 * 1024 * 1024;
+import { canon, DIAS, type Dia } from './catalogo.ts';
+import { ESQUEMAS, type Crudas, type Fila, type Tabla } from './esquemas.ts';
 
 export type Alumno = {
   expediente: string; apellidos: string; nombre: string; grupo: string;
@@ -32,48 +29,6 @@ export function leerCsv(texto: string): Record<string, string>[] {
   });
   return r.data;
 }
-
-/** Tabla a la que corresponde un nombre de archivo u hoja ("alumnos_2026-27.csv" → alumnos). */
-export const tablaDe = (nombre: string) => TABLAS.find((t) => norm(nombre).startsWith(t));
-
-/** Lee CSV sueltos, un XLSX con una hoja por tabla y las listas del colegio (.docx → tabla alumnos). */
-export async function leerArchivos(files: File[]): Promise<{ crudas: Crudas; errores: string[]; avisos: string[] }> {
-  const crudas: Crudas = {};
-  const errores: string[] = [];
-  const avisos: string[] = [];
-  for (const f of files) {
-    if (f.size > MAX_BYTES) { errores.push(`${f.name}: supera 5 MB`); continue; }
-    if (/\.docx$/i.test(f.name)) {
-      try {
-        const r = alumnosDeDocx(await leerZip(new Uint8Array(await f.arrayBuffer()), 'word/document.xml'));
-        if (!r.filas.length) errores.push(`${f.name}: no se han encontrado alumnos`);
-        crudas.alumnos = [...(crudas.alumnos ?? []), ...r.filas];
-        avisos.push(...r.avisos);
-      } catch (e) { errores.push(`${f.name}: ${(e as Error).message}`); }
-    } else if (/\.xlsx$/i.test(f.name)) {
-      const { default: leerXlsx, readSheetNames } = await import('read-excel-file');
-      for (const hoja of await readSheetNames(f)) {
-        const t = tablaDe(hoja);
-        if (!t) continue;
-        const [cab = [], ...filas] = await leerXlsx(f, { sheet: hoja });
-        const claves = cab.map((c) => String(c ?? '').trim().toLowerCase());
-        crudas[t] = filas.map((fila) => Object.fromEntries(claves.map((k, i) => [k, texto(fila[i])])));
-      }
-    } else {
-      const t = tablaDe(f.name);
-      if (t) crudas[t] = leerCsv(await f.text());
-      else errores.push(`${f.name}: nombre de archivo no reconocido`);
-    }
-  }
-  return { crudas, errores, avisos };
-}
-
-const hhmm = (min: number) => `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
-/** Celda de Excel → texto. Una hora guardada como hora de Excel (fracción de día) pasa a HH:MM. */
-const texto = (v: unknown) =>
-  v instanceof Date ? v.toISOString().slice(11, 16)
-    : typeof v === 'number' && v > 0 && v < 1 ? hhmm(Math.round(v * 1440))
-    : v == null ? '' : String(v);
 
 /** Valida las tablas crudas y construye el modelo. Si hay errores, no devuelve datos. */
 export function construir(crudas: Crudas): Resultado {

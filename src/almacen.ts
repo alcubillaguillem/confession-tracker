@@ -1,10 +1,10 @@
-import { clear, del, get, set } from 'idb-keyval';
+import { get, set } from 'idb-keyval';
 import { z } from 'zod';
 import { descifrar } from './domain/cifrado.ts';
 import { TABLAS, type Crudas } from './domain/esquemas.ts';
-import { construir, MAX_BYTES, type Alumno } from './domain/importar.ts';
+import { construir, type Alumno } from './domain/importar.ts';
 
-// El CSV importado (crudas) nunca se modifica. Lo que hace el usuario vive aparte, en `estado`.
+// Base de datos local (IndexedDB). Los datos del curso (crudas) nunca se modifican; lo que hace el usuario vive en `estado`.
 const exps = z.array(z.string().max(12)).max(5000);
 const ESTADO = z.object({
   mensual: z.record(z.string().max(12), z.boolean()), // añadidos (true) o quitados (false) respecto al CSV
@@ -15,8 +15,7 @@ const ESTADO = z.object({
   apodos: z.record(z.string().max(12), z.string().trim().min(1).max(60)).default({}),
 });
 const CRUDAS = z.partialRecord(z.enum(TABLAS), z.array(z.record(z.string(), z.string())).max(5000));
-const COPIA = z.object({ version: z.literal(1), crudas: CRUDAS, estado: ESTADO });
-const ENLACE = z.object({ version: z.literal(1), id: z.string().max(100), crudas: CRUDAS });
+const CURSO = z.object({ version: z.literal(1), id: z.string().max(100), crudas: CRUDAS });
 
 export type Estado = z.infer<typeof ESTADO>;
 /** Actualización funcional: evita perder cambios con clics rápidos. */
@@ -47,31 +46,23 @@ export async function cargar(): Promise<{ crudas?: Crudas; estado: Estado }> {
 
 export const guardarEstado = (e: Estado) => set('estado', e);
 
-/** Importar datos nuevos = empezar de cero (se conservan solo las preferencias de visualización). */
-export async function reemplazarDatos(crudas: Crudas, prefs: Estado['prefs']): Promise<Estado> {
-  const estado = estadoVacio(prefs);
-  await set('crudas', crudas);
-  await set('estado', estado);
-  await del('curso');
-  return estado;
-}
-
-/** Datos del curso publicados cifrados (./curso.enc), abiertos con la clave del enlace. Mismo curso ya cargado → no toca nada. */
-export async function cargarDesdeEnlace(clave: string, prefs: Estado['prefs']): Promise<{ crudas: Crudas; estado: Estado } | 'mismo' | string> {
+/**
+ * Primera apertura: descifra los datos del curso (./curso.enc, publicado con la app) con la contraseña,
+ * los valida y los guarda en la base de datos local. Después la app ya no la vuelve a pedir.
+ */
+export async function desbloquear(contrasena: string, prefs: Estado['prefs']): Promise<{ crudas: Crudas; estado: Estado } | string> {
+  let bytes: Uint8Array;
+  try { bytes = new Uint8Array(await (await fetch('./curso.enc', { cache: 'no-store' })).arrayBuffer()); }
+  catch { return 'Sin conexión. La primera vez hace falta internet.'; }
   let json: unknown;
-  try {
-    const res = await fetch('./curso.enc', { cache: 'no-store' });
-    json = await descifrar(new Uint8Array(await res.arrayBuffer()), clave);
-  } catch { return 'No se han podido abrir los datos del curso: el enlace no es válido o no hay conexión.'; }
-  const r = ENLACE.safeParse(json);
-  if (!r.success || construir(r.data.crudas).errores.length) return 'Los datos del curso publicados no son válidos.';
-  if ((await get('curso')) === r.data.id) return 'mismo';
-  const estado = await reemplazarDatos(r.data.crudas, prefs);
-  await set('curso', r.data.id);
+  try { json = await descifrar(bytes, contrasena); } catch { return 'Contraseña incorrecta.'; }
+  const r = CURSO.safeParse(json);
+  if (!r.success || construir(r.data.crudas).errores.length) return 'Los datos del curso no son válidos.';
+  const estado = estadoVacio(prefs);
+  await set('crudas', r.data.crudas);
+  await set('estado', estado);
   return { crudas: r.data.crudas, estado };
 }
-
-export const borrarTodo = () => clear();
 
 export const esMensual = (a: Alumno, e: Estado) => e.mensual[a.expediente] ?? a.confesionMensual;
 
@@ -111,20 +102,3 @@ export const ocultar = (exp: string) => (e: Estado): Estado => {
 };
 
 export const mostrar = (exp: string) => (e: Estado): Estado => ({ ...e, ocultos: e.ocultos.filter((x) => x !== exp) });
-
-export const copiaJson = (crudas: Crudas, estado: Estado) =>
-  new Blob([JSON.stringify({ version: 1, crudas, estado })], { type: 'application/json' });
-
-export async function leerCopia(f: File): Promise<{ crudas: Crudas; estado: Estado } | string> {
-  if (f.size > MAX_BYTES) return 'La copia supera 5 MB';
-  let json: unknown;
-  try { json = JSON.parse(await f.text()); } catch { return 'El archivo no es JSON válido'; }
-  const r = COPIA.safeParse(json);
-  if (!r.success) return 'La copia no tiene el formato esperado';
-  const errores = construir(r.data.crudas).errores;
-  if (errores.length) return `Copia con datos no válidos: ${errores[0]}`;
-  await set('crudas', r.data.crudas);
-  await set('estado', alDia(r.data.estado));
-  await del('curso');
-  return { crudas: r.data.crudas, estado: alDia(r.data.estado) };
-}

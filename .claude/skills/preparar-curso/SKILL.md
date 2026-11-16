@@ -4,17 +4,12 @@ description: Procedimiento anual para convertir las fotos de horarios/desdobles 
 ---
 # Preparar los datos de un curso
 
-Se hace **una vez al año** (y si hay cambios a mitad de curso). **El sacerdote no importa nada**: recibe un enlace y,
-al pulsarlo, la app ya tiene todos los datos.
+Se hace **una vez al año**. **El sacerdote no importa nada**: abre la web, escribe la contraseña la primera vez y la
+app ya tiene todos los datos guardados en su dispositivo (no se vuelve a pedir).
 
-**Cómo funciona el enlace**: los datos validados se cifran (AES-256-GCM) en `public/curso.enc`, que se publica con la web.
-La clave está en `horarios_y_alumnos/<curso>/clave.txt` (fuera de git) y viaja solo en el enlace, tras `#`
-(`…/confession-tracker/#k=<clave>`), que el navegador nunca envía al servidor. Al abrirlo, la app descifra, valida, guarda
-los datos en el dispositivo y borra la clave de la barra de direcciones. Reabrir el mismo enlace con los mismos datos no
-borra nada; si hay datos nuevos publicados, se cargan (empezando de cero).
-
-Alternativas que siguen funcionando: importar en la app (Ajustes → Importar datos: Excel de horarios + listas .docx) o
-restaurar el `.json` (Ajustes → Restaurar copia).
+**Cómo funciona**: los datos validados se cifran con la contraseña (PBKDF2-SHA256 600 000 iteraciones → AES-256-GCM)
+en `public/curso.enc`, que se publica con la web. La contraseña se pasa en la variable `CT_CONTRASENA` al publicar y
+nunca se guarda en el repositorio ni en archivos. Recomendado: 4 palabras o 16+ caracteres (el archivo cifrado es público).
 
 ## 0. Privacidad (obligatorio)
 - Todo vive en `horarios_y_alumnos/<curso>/`, excluido de git y de Graphify. Nunca se sube a GitHub.
@@ -41,7 +36,7 @@ Partir de la carpeta `tablas/` del curso anterior: suele cambiar solo `horarios`
 ## 3. Generar y validar
 ```bash
 npm run preparar -- horarios_y_alumnos/<curso>             # solo validar
-npm run preparar -- horarios_y_alumnos/<curso> --publicar  # validar, cifrar en public/curso.enc y mostrar el enlace
+CT_CONTRASENA='…' npm run preparar -- horarios_y_alumnos/<curso> --publicar  # validar y cifrar en public/curso.enc
 ```
 - Si una lista no trae columna de opción (1ºE), se deduce del horario del grupo: la única opción cuyas 3 asignaturas aparecen en él.
 - El script lee las listas (excluye las filas con «BAJA»), valida todo con las reglas de la app y muestra recuentos por grupo.
@@ -52,12 +47,11 @@ npm run preparar -- horarios_y_alumnos/<curso> --publicar  # validar, cifrar en 
 Comparar 3 alumnos al azar de distintos grupos con su horario en papel (vista Horario de la app, tras importar en un navegador de prueba).
 
 ## 5. Publicar y entregar
-1. `npm run preparar -- horarios_y_alumnos/<curso> --publicar` (exige 0 errores y 0 horarios ambiguos).
-2. Comprobar que `public/curso.enc` no contiene texto legible; commit y push de `public/curso.enc` (el despliegue lo publica).
-3. Enviar al sacerdote, por chat privado, el enlace que muestra el script:
-   > Padre, este es su enlace de Confession Tracker. Ábralo en el móvil y la app quedará lista. No lo reenvíe a nadie: da acceso a los datos.
+1. `CT_CONTRASENA='…' npm run preparar -- horarios_y_alumnos/<curso> --publicar` (exige 0 errores y 0 horarios ambiguos).
+2. Comprobar que `public/curso.enc` no contiene texto legible; commit y push (el despliegue lo publica).
+3. Dar al sacerdote el enlace de la web y, por otra vía (en persona o por teléfono), la contraseña.
 
-Curso nuevo = carpeta nueva = clave nueva (se genera sola): el enlace del año anterior deja de abrir los datos nuevos.
+Curso nuevo = contraseña nueva.
 
 ## Altas y bajas a mitad de curso
-Pedir la lista actualizada, sustituirla en `listas/` y repetir los pasos 3 y 5 con la misma carpeta (misma clave): el sacerdote vuelve a pulsar su enlace de siempre. Al cargarse datos nuevos, la app empieza de cero (marcas incluidas).
+La app actual solo carga los datos la primera vez. Para cambios a mitad de curso habría que añadir un botón de actualización (no implementado por decisión del usuario).

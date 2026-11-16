@@ -1,30 +1,30 @@
-// Datos del curso cifrados con AES-256-GCM (Web Crypto, también en Node). El archivo cifrado se publica
-// con la web; la clave solo viaja en el enlace, tras "#", que el navegador nunca envía a ningún servidor.
+// Datos del curso cifrados con una contraseña: PBKDF2-SHA256 (600 000 iteraciones) → AES-256-GCM.
+// Web Crypto, también en Node. El archivo cifrado se publica con la web; la contraseña nunca se guarda en el código.
 
-const b64 = (b: Uint8Array) => btoa(String.fromCharCode(...b)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-const deb64 = (s: string) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0));
+const ITERACIONES = 600_000;
 
-export const nuevaClave = () => b64(crypto.getRandomValues(new Uint8Array(32)));
+async function derivar(contrasena: string, sal: Uint8Array<ArrayBuffer>, uso: 'encrypt' | 'decrypt') {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(contrasena.normalize('NFC')), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: sal, iterations: ITERACIONES, hash: 'SHA-256' },
+    base, { name: 'AES-GCM', length: 256 }, false, [uso]);
+}
 
-const importar = (clave: string, uso: 'encrypt' | 'decrypt') => {
-  const raw = deb64(clave);
-  if (raw.length !== 32) throw new Error('clave no válida');
-  return crypto.subtle.importKey('raw', raw, 'AES-GCM', false, [uso]);
-};
-
-/** iv (12 bytes) + texto cifrado. */
-export async function cifrar(datos: unknown, clave: string): Promise<Uint8Array> {
+/** sal (16 bytes) + iv (12 bytes) + texto cifrado. */
+export async function cifrar(datos: unknown, contrasena: string): Promise<Uint8Array> {
+  const sal = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
-  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await importar(clave, 'encrypt'),
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await derivar(contrasena, sal, 'encrypt'),
     new TextEncoder().encode(JSON.stringify(datos)));
-  const out = new Uint8Array(12 + ct.byteLength);
-  out.set(iv);
-  out.set(new Uint8Array(ct), 12);
+  const out = new Uint8Array(28 + ct.byteLength);
+  out.set(sal);
+  out.set(iv, 16);
+  out.set(new Uint8Array(ct), 28);
   return out;
 }
 
-/** Lanza un error si la clave no corresponde o el archivo está alterado (GCM autentica). */
-export async function descifrar(bytes: Uint8Array, clave: string): Promise<unknown> {
-  const plano = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: bytes.slice(0, 12) }, await importar(clave, 'decrypt'), bytes.slice(12));
+/** Lanza un error si la contraseña no es la correcta o el archivo está alterado (GCM autentica). */
+export async function descifrar(bytes: Uint8Array, contrasena: string): Promise<unknown> {
+  const clave = await derivar(contrasena, bytes.slice(0, 16), 'decrypt');
+  const plano = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: bytes.slice(16, 28) }, clave, bytes.slice(28));
   return JSON.parse(new TextDecoder().decode(plano));
 }

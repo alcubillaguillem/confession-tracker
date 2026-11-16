@@ -1,13 +1,12 @@
 // Prepara los datos de un curso sin pasar por la app (procedimiento: skill `preparar-curso`).
-//   npm run preparar -- horarios_y_alumnos/2026-27 [--publicar]
+//   npm run preparar -- horarios_y_alumnos/2026-27 [--publicar]   (con --publicar: variable CT_CONTRASENA)
 // Entrada:  <carpeta>/listas/*.docx (listas del colegio) y <carpeta>/tablas/*.csv (las otras 7 tablas).
-// Salida:   <carpeta>/alumnos.csv (para revisar) y <carpeta>/confession-tracker-<curso>.json (Ajustes → Restaurar copia).
-// --publicar: además cifra el curso en public/curso.enc y muestra el enlace con la clave (guardada en <carpeta>/clave.txt).
+// Salida:   <carpeta>/alumnos.csv (para revisar).
+// --publicar: además cifra el curso con la contraseña de CT_CONTRASENA en public/curso.enc (la contraseña no se guarda).
 // Usa el mismo lector y las mismas validaciones que la app. No envía nada a ningún sitio.
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
-import { estadoVacio } from '../src/almacen.ts';
-import { cifrar, nuevaClave } from '../src/domain/cifrado.ts';
+import { cifrar } from '../src/domain/cifrado.ts';
 import { TABLAS, type Crudas } from '../src/domain/esquemas.ts';
 import { construir, leerCsv } from '../src/domain/importar.ts';
 import { alumnosDeDocx, leerZip } from '../src/domain/listas.ts';
@@ -42,20 +41,14 @@ for (const a of [...avisos, ...ambiguos, ...r.avisos]) console.log(`  aviso  ${a
 
 const cab = 'expediente;apellidos;nombre;grupo;opcion;optativa;confesion_mensual';
 writeFileSync(join(carpeta, 'alumnos.csv'), [cab, ...alumnos.map((a) => cab.split(';').map((k) => a[k]).join(';'))].join('\n') + '\n');
-const salida = join(carpeta, `confession-tracker-${basename(carpeta)}.json`);
-writeFileSync(salida, JSON.stringify({ version: 1, crudas, estado: estadoVacio() }));
-console.log(`\nOK: ${r.datos.alumnos.length} alumnos, ${Object.keys(r.datos.grupos).length} grupos, ${ambiguos.length} horarios ambiguos.\nEntregable: ${salida}`);
+console.log(`\nOK: ${r.datos.alumnos.length} alumnos, ${Object.keys(r.datos.grupos).length} grupos, ${ambiguos.length} horarios ambiguos.`);
 
 if (opcion === '--publicar') {
   if (ambiguos.length) throw new Error('Hay horarios ambiguos: corrígelos antes de publicar.');
-  // Misma clave durante todo el curso: el sacerdote vuelve a pulsar el mismo enlace tras una actualización.
-  const rutaClave = join(carpeta, 'clave.txt');
-  if (!existsSync(rutaClave)) writeFileSync(rutaClave, nuevaClave());
-  const clave = readFileSync(rutaClave, 'utf8').trim();
+  const contrasena = process.env.CT_CONTRASENA ?? '';
+  if (contrasena.length < 8) throw new Error('Define CT_CONTRASENA (mínimo 8 caracteres) con la contraseña que tendrá el sacerdote.');
   const id = `${basename(carpeta)}@${new Date().toISOString()}`;
-  writeFileSync('public/curso.enc', await cifrar({ version: 1, id, crudas }, clave));
+  writeFileSync('public/curso.enc', await cifrar({ version: 1, id, crudas }, contrasena));
   console.log(`
-Publicado cifrado en public/curso.enc (${id}).
-Enlace para el sacerdote (no lo compartas con nadie más):
-https://alcubillaguillem.github.io/confession-tracker/#k=${clave}`);
+Publicado cifrado en public/curso.enc (${id}). Haz commit y push para subirlo a la web.`);
 }

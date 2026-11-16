@@ -11,14 +11,14 @@ Fuente de verdad: `horarios_y_alumnos/Claude outputs/app-confesiones-especificac
 
 ## Estructura
 - `src/domain/` lógica pura y testeada: `catalogo.ts`, `esquemas.ts`, `importar.ts`, `resolver.ts`.
-- `src/almacen.ts` IndexedDB (idb-keyval). El CSV importado no se modifica nunca; las marcas y listas viven aparte en `estado`. Importar = empezar de cero.
+- `src/almacen.ts` base de datos local (IndexedDB, idb-keyval). Los datos del curso no se modifican nunca; marcas, apodos y ocultos viven aparte en `estado`. Sin importar, exportar ni borrar desde la interfaz.
 - `src/avisos.ts` avisos de mitad de mes, final de mes y enhorabuena (al abrir la app; solo recuentos en las notificaciones).
-- `src/ui/` Preact: `App` (barra inferior en móvil, menú lateral en escritorio), pantallas `Buscar` (con `DondeEstan`: selección agrupada por aula), `Mensual`, `Ajustes`, `Horario`; `comun.tsx` (fila con pulsación larga, menú del alumno, anillo); `iconos.tsx` (SVG propios). Paleta morado y dorado en `estilos.css`.
+- `src/ui/` Preact: `App` (barra inferior en móvil, menú lateral en escritorio), `Desbloqueo` (contraseña la primera vez), pestañas `Principal` (dashboard y pendientes), `Alumnos` (lista alfabética de 20 en 20 con buscador), `Ajustes`; `Horario`; `comun.tsx` (fila con pulsación larga, menú del alumno, anillo); `iconos.tsx` (SVG propios). Paleta morado y dorado en `estilos.css`.
 - Ocultar alumno y apodos viven en `estado` (`almacen.ts`); el CSV nunca cambia.
 - `public/sw.js` offline. Icono: estola dorada sobre morado (`icon.svg` + PNG 180/192/512).
 - Grafo: `graphify update .` (solo código, local). `graphify query "..." --budget 800` para consultar.
 - `data/ejemplo/` datos de prueba (alumnos ficticios 9000xx).
-- Datos de cada curso: skill `preparar-curso` → `npm run preparar -- horarios_y_alumnos/<curso> --publicar` cifra el curso en `public/curso.enc` (AES-256-GCM, `src/domain/cifrado.ts`) y da el enlace `…/#k=<clave>`: el sacerdote lo pulsa y la app ya tiene los datos. La clave (`clave.txt`) nunca entra en git. Las listas nunca pasan por una IA externa.
+- Datos de cada curso: skill `preparar-curso` → `CT_CONTRASENA=… npm run preparar -- horarios_y_alumnos/<curso> --publicar` cifra el curso con la contraseña (PBKDF2 + AES-256-GCM, `src/domain/cifrado.ts`) en `public/curso.enc`. El sacerdote abre la web, escribe la contraseña una vez y los datos quedan en su dispositivo. La contraseña nunca se escribe en el repositorio. Las listas nunca pasan por una IA externa.
 
 ## Comandos
 `npm run dev` · `npm test` · `npm run build` · `npm audit` · `npm run preparar -- <carpeta>`
