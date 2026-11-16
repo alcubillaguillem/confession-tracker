@@ -55,3 +55,5 @@ Formato y ciclo: skill `flujo-tareas`.
   - Archivos: scripts/preparar-curso.ts · Acepta: 298 alumnos 2026-27, 0 ambiguos, idéntico al CSV de la especificación
 - [x] T21 · Skill `preparar-curso` y prompt de transcripción para delegar
   - Archivos: .claude/skills/preparar-curso/, docs/prompt-transcribir-horarios.md
+- [x] T22 · La app importa las listas del colegio (.docx) junto al Excel de horarios; deduce la opción si falta; avisa de horarios ambiguos
+  - Archivos: src/domain/listas.ts, src/domain/importar.ts, src/ui/Ajustes.tsx · Acepta: Excel + 2 Word reales → 298 alumnos sin errores

@@ -18,7 +18,7 @@ Fuente de verdad: `horarios_y_alumnos/Claude outputs/app-confesiones-especificac
 - `public/sw.js` offline. Icono: estola dorada sobre morado (`icon.svg` + PNG 180/192/512).
 - Grafo: `graphify update .` (solo código, local). `graphify query "..." --budget 800` para consultar.
 - `data/ejemplo/` datos de prueba (alumnos ficticios 9000xx).
-- Datos de cada curso: skill `preparar-curso` → `npm run preparar -- horarios_y_alumnos/<curso>` genera el `.json` que el sacerdote importa. Las listas de alumnos nunca pasan por una IA externa.
+- Datos de cada curso: skill `preparar-curso`. El sacerdote importa en la app el Excel de horarios (transcrito por IA con `docs/prompt-transcribir-horarios.md`) junto a las listas del colegio (.docx, leídas en el dispositivo). Alternativa: `npm run preparar`. Las listas nunca pasan por una IA externa.
 
 ## Comandos
 `npm run dev` · `npm test` · `npm run build` · `npm audit` · `npm run preparar -- <carpeta>`

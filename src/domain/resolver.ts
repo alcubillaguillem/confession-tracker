@@ -77,6 +77,10 @@ export function consultar(d: Datos, a: Alumno, dia: Dia, franja: string): Consul
   return opciones.length ? { opciones, ambiguo } : { ...nada('Sin clase en esta franja'), ambiguo };
 }
 
+/** Alumnos sin una única asignación semanal: hay que revisar el horario o la hoja de desdobles. */
+export const avisosAmbiguos = (d: Datos) => d.alumnos.filter((a) => asignaciones(d, a).length !== 1)
+  .map((a) => `${a.grupo}: horario ambiguo para el expediente ${a.expediente} (opción ${a.opcion}, ${a.optativa})`);
+
 /** Día y franja de una fecha, o null si es fin de semana o fuera de horario. */
 export function franjaDe(d: Datos, fecha: Date): { dia: Dia; franja: string } | null {
   const dia = DIAS[fecha.getDay() - 1];

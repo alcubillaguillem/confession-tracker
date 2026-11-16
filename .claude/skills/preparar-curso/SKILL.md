@@ -4,8 +4,14 @@ description: Procedimiento anual para convertir las fotos de horarios/desdobles 
 ---
 # Preparar los datos de un curso
 
-Se hace **una vez al año** (y si hay cambios de horario a mitad de curso). Resultado: un único archivo
-`confession-tracker-<curso>.json` que el sacerdote importa en la app (**Ajustes → Restaurar copia**).
+Se hace **una vez al año** (y si hay cambios de horario a mitad de curso). Dos caminos con el mismo formato y las mismas validaciones:
+
+- **A. El sacerdote, solo, desde la app** (el habitual; lo explica la guía para sacerdotes): pasa las fotos a una IA con
+  `docs/prompt-transcribir-horarios.md` → recibe `horarios.xlsx` (7 hojas) → en la app, **Ajustes → Importar datos**, elige a la vez
+  ese Excel y las listas del colegio (.docx). La app lee las listas en el dispositivo, deduce la opción si la lista no la trae
+  y avisa de bajas, aulas que faltan y horarios ambiguos.
+- **B. Preparado por nosotros** (pasos 1–5 de abajo): el resultado es un único `confession-tracker-<curso>.json`
+  que el sacerdote importa en **Ajustes → Restaurar copia**.
 
 ## 0. Privacidad (obligatorio)
 - Todo vive en `horarios_y_alumnos/<curso>/`, excluido de git y de Graphify. Nunca se sube a GitHub.
@@ -26,14 +32,14 @@ Partir de la carpeta `tablas/` del curso anterior: suele cambiar solo `horarios`
 ## 2. Transcribir las fotos → `tablas/*.csv`
 - Formato y nombres de asignatura: skill `formato-importacion`. Separador `;`, alternativas con ` / `.
 - Con Claude Code: leer cada foto y editar el CSV correspondiente.
-- Delegando sin Claude Code: usar el prompt de `docs/prompt-transcribir-horarios.md` adjuntando solo las fotos.
+- Sin Claude Code: usar el prompt de `docs/prompt-transcribir-horarios.md` adjuntando solo las fotos (devuelve un Excel; sus hojas se pueden guardar como los CSV de `tablas/`).
 - Ante cualquier celda dudosa, **preguntar**, no adivinar.
 
 ## 3. Generar y validar
 ```bash
-npm run preparar -- horarios_y_alumnos/<curso> --opcion 1E=4
+npm run preparar -- horarios_y_alumnos/<curso>
 ```
-- `--opcion GRUPO=OPCIÓN` solo para grupos cuya lista no trae columna de opción (en 2026-27, 1ºE es opción 4).
+- Si una lista no trae columna de opción (1ºE), se deduce del horario del grupo: la única opción cuyas 3 asignaturas aparecen en él.
 - El script lee las listas (excluye las filas con «BAJA»), valida todo con las reglas de la app y muestra recuentos por grupo.
 - **Criterio de aceptación**: 0 errores y 0 horarios ambiguos. Revisar los avisos de coherencia (asignatura desdoblada sin aula): si un grupo no tiene alumnos en esa asignatura, se puede ignorar.
 - Si hay errores: corregir `tablas/` y repetir. Si hay horarios ambiguos: suele faltar o sobrar una asignatura en un bloque del horario de ese grupo.

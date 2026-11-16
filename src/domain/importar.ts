@@ -1,6 +1,7 @@
 import Papa from 'papaparse';
 import { canon, DIAS, norm, type Dia } from './catalogo.ts';
 import { ESQUEMAS, TABLAS, type Crudas, type Fila, type Tabla } from './esquemas.ts';
+import { alumnosDeDocx, leerZip } from './listas.ts';
 
 export const MAX_BYTES = 5 * 1024 * 1024;
 
@@ -35,13 +36,21 @@ export function leerCsv(texto: string): Record<string, string>[] {
 /** Tabla a la que corresponde un nombre de archivo u hoja ("alumnos_2026-27.csv" → alumnos). */
 export const tablaDe = (nombre: string) => TABLAS.find((t) => norm(nombre).startsWith(t));
 
-/** Lee CSV sueltos o un XLSX con una hoja por tabla. */
-export async function leerArchivos(files: File[]): Promise<{ crudas: Crudas; errores: string[] }> {
+/** Lee CSV sueltos, un XLSX con una hoja por tabla y las listas del colegio (.docx → tabla alumnos). */
+export async function leerArchivos(files: File[]): Promise<{ crudas: Crudas; errores: string[]; avisos: string[] }> {
   const crudas: Crudas = {};
   const errores: string[] = [];
+  const avisos: string[] = [];
   for (const f of files) {
     if (f.size > MAX_BYTES) { errores.push(`${f.name}: supera 5 MB`); continue; }
-    if (/\.xlsx$/i.test(f.name)) {
+    if (/\.docx$/i.test(f.name)) {
+      try {
+        const r = alumnosDeDocx(await leerZip(new Uint8Array(await f.arrayBuffer()), 'word/document.xml'));
+        if (!r.filas.length) errores.push(`${f.name}: no se han encontrado alumnos`);
+        crudas.alumnos = [...(crudas.alumnos ?? []), ...r.filas];
+        avisos.push(...r.avisos);
+      } catch (e) { errores.push(`${f.name}: ${(e as Error).message}`); }
+    } else if (/\.xlsx$/i.test(f.name)) {
       const { default: leerXlsx, readSheetNames } = await import('read-excel-file');
       for (const hoja of await readSheetNames(f)) {
         const t = tablaDe(hoja);
@@ -56,11 +65,15 @@ export async function leerArchivos(files: File[]): Promise<{ crudas: Crudas; err
       else errores.push(`${f.name}: nombre de archivo no reconocido`);
     }
   }
-  return { crudas, errores };
+  return { crudas, errores, avisos };
 }
 
+const hhmm = (min: number) => `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
+/** Celda de Excel → texto. Una hora guardada como hora de Excel (fracción de día) pasa a HH:MM. */
 const texto = (v: unknown) =>
-  v instanceof Date ? v.toISOString().slice(11, 16) : v == null ? '' : String(v);
+  v instanceof Date ? v.toISOString().slice(11, 16)
+    : typeof v === 'number' && v > 0 && v < 1 ? hhmm(Math.round(v * 1440))
+    : v == null ? '' : String(v);
 
 /** Valida las tablas crudas y construye el modelo. Si hay errores, no devuelve datos. */
 export function construir(crudas: Crudas): Resultado {
@@ -112,6 +125,13 @@ export function construir(crudas: Crudas): Resultado {
     d.optativas[`${o.curso}|${codigoOptativa(o.codigo)}`] = asig('optativas', i, o.asignatura, o.curso);
   });
 
+  /** Lista sin columna de opción (p. ej. 1ºE): la única opción cuyas 3 asignaturas están en el horario del grupo. */
+  const deducirOpcion = (grupo: string, curso: string) => {
+    const enHorario = new Set(Object.values(d.horarios[grupo] ?? {}).flatMap((dias) => Object.values(dias).flat()));
+    const posibles = Object.entries(d.opciones).filter(([k, asigs]) => k.startsWith(`${curso}|`) && asigs.every((s) => enHorario.has(s)));
+    return posibles.length === 1 ? posibles[0]![0].split('|')[1]! : '';
+  };
+
   const vistos = new Set<string>();
   v('alumnos').forEach((a, i) => {
     const g = d.grupos[a.grupo];
@@ -119,9 +139,11 @@ export function construir(crudas: Crudas): Resultado {
     vistos.add(a.expediente);
     if (!g) return err('alumnos', i, `grupo "${a.grupo}" no está en grupos`);
     const optativa = codigoOptativa(a.optativa);
-    if (!d.opciones[`${g.curso}|${a.opcion}`]) return err('alumnos', i, `opción "${a.opcion}" no existe en ${g.curso}º`);
+    const opcion = a.opcion || deducirOpcion(a.grupo, g.curso);
+    if (!opcion) return err('alumnos', i, `falta la opción y no se puede deducir del horario de ${a.grupo}`);
+    if (!d.opciones[`${g.curso}|${opcion}`]) return err('alumnos', i, `opción "${opcion}" no existe en ${g.curso}º`);
     if (!d.optativas[`${g.curso}|${optativa}`]) return err('alumnos', i, `optativa "${a.optativa}" no existe en ${g.curso}º`);
-    d.alumnos.push({ ...a, optativa, confesionMensual: a.confesion_mensual !== '' });
+    d.alumnos.push({ ...a, opcion, optativa, confesionMensual: a.confesion_mensual !== '' });
   });
 
   avisos.push(...coherencia(d));

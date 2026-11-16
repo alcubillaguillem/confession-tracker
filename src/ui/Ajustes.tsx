@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import { borrarTodo, copiaJson, estadoVacio, leerCopia, mostrar, nombreDe, reemplazarDatos, type Actualizar, type Estado } from '../almacen';
 import type { Crudas } from '../domain/esquemas';
 import { construir, leerArchivos, type Datos } from '../domain/importar';
+import { avisosAmbiguos } from '../domain/resolver';
 import { Icono } from './iconos';
 
 type Props = {
@@ -25,7 +26,7 @@ export function Ajustes({ crudas, datos, estado, setEstado, setCrudas }: Props) 
     const nuevas = crudas && solo.length === 1 && solo[0] === 'alumnos' ? { ...crudas, ...leido.crudas } : leido.crudas;
     const r = construir(nuevas);
     setErrores([...leido.errores, ...r.errores]);
-    setAvisos(r.avisos);
+    setAvisos([...leido.avisos, ...(r.datos ? avisosAmbiguos(r.datos) : []), ...r.avisos]);
     if (!r.datos || (crudas && !confirm(AVISO_CERO))) return;
     setCrudas(nuevas, await reemplazarDatos(nuevas, estado.prefs));
   }
@@ -62,8 +63,8 @@ export function Ajustes({ crudas, datos, estado, setEstado, setCrudas }: Props) 
 
       <h2 class="seccion">Datos</h2>
       <ul class="lista">
-        <li><label class="fila-ajuste"><Icono n="importar" /><span>Importar datos<small>CSV o Excel. Solo alumnos.csv mantiene los horarios.</small></span>
-          <input type="file" multiple accept=".csv,.xlsx" class="oculto"
+        <li><label class="fila-ajuste"><Icono n="importar" /><span>Importar datos<small>Excel de horarios y listas del colegio (Word), a la vez. Solo listas: se mantienen los horarios.</small></span>
+          <input type="file" multiple accept=".csv,.xlsx,.docx" class="oculto"
             onChange={(e) => { void importar([...(e.currentTarget.files ?? [])]); e.currentTarget.value = ''; }} /></label></li>
         <li><button class="fila-ajuste" disabled={!crudas} onClick={descargar}><Icono n="exportar" /><span>Exportar copia de seguridad<small>Archivo JSON con datos y marcas</small></span></button></li>
         <li><label class="fila-ajuste"><Icono n="importar" /><span>Restaurar copia</span>

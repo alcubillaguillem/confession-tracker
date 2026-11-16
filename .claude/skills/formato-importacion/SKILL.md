@@ -4,7 +4,7 @@ description: Formato estándar de las 8 tablas de importación (CSV ; UTF-8 o XL
 ---
 # Formato de importación
 
-Implementación: `src/domain/esquemas.ts` (Zod), `src/domain/importar.ts`, `src/domain/catalogo.ts`. Ejemplo completo: `data/ejemplo/`.
+Implementación: `src/domain/esquemas.ts` (Zod), `src/domain/importar.ts`, `src/domain/catalogo.ts`, `src/domain/listas.ts` (listas del colegio .docx → tabla alumnos). Ejemplo completo: `data/ejemplo/`.
 
 | Tabla | Columnas |
 |---|---|
@@ -23,5 +23,7 @@ Reglas:
 - Asignaturas → nombre canónico vía `catalogo.ts` (alias, sin tildes ni mayúsculas). Desconocida = error.
 - `grupos` en desdobles = letras (`ABCD`). Código optativa `C.C.` → `C.C`.
 - `expediente` único. `confesion_mensual` = `si` o vacío.
-- Importación parcial: solo `alumnos` (sin tocar horarios).
+- La tabla alumnos puede venir de las listas del colegio (.docx): filas «BAJA» excluidas; sin columna de opción → se deduce del horario del grupo.
+- Importación parcial: solo `alumnos` o solo las listas .docx (sin tocar horarios). Importar siempre empieza de cero.
+- Al importar, la app avisa de alumnos con horario ambiguo (`avisosAmbiguos`).
 - Coherencia (aviso, no error): asignatura desdoblada de un grupo sin fila en desdobles para ese día y franja.
