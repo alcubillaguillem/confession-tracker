@@ -5,7 +5,7 @@ import type { Crudas } from '../domain/esquemas';
 import { construir, type Alumno } from '../domain/importar';
 import { Ajustes } from './Ajustes';
 import { Alumnos } from './Alumnos';
-import { ahora, Barra, DIA_LARGO, MenuAlumno, nombreMes, type Ctx, type Cuando, type Pestana } from './comun';
+import { ahora, Barra, MenuAlumno, nombreMes, type Ctx, type Cuando, type Pestana } from './comun';
 import { Desbloqueo } from './Desbloqueo';
 import { Horario } from './Horario';
 import { Icono, type NombreIcono } from './iconos';
@@ -26,7 +26,13 @@ export function App() {
 
   useEffect(() => { void cargar().then((r) => { setCrudas(r.crudas); setEstadoLocal(r.estado); }); }, []);
   const datos = useMemo(() => (crudas ? construir(crudas).datos : undefined), [crudas]);
-  useEffect(() => { if (datos) setCuando(ahora(datos)); }, [datos]);
+  // La app sigue la hora sola: recalcula el día y la franja cada 30 segundos.
+  useEffect(() => {
+    if (!datos) return;
+    setCuando(ahora(datos));
+    const t = setInterval(() => setCuando(ahora(datos)), 30_000);
+    return () => clearInterval(t);
+  }, [datos]);
 
   const setEstado: Actualizar = (f) => setEstadoLocal((prev) => {
     const e = f(prev!);
@@ -59,13 +65,12 @@ export function App() {
   if (!datos) return <Desbloqueo prefs={estado.prefs} listo={(c, e) => { setCrudas(c); setEstadoLocal(e); }} />;
 
   const ir = (p: Pestana) => { setPestana(p); setHorarioDe(null); };
-  const franja = datos.franjas.find((f) => f.franja === cuando.franja);
   const subtitulo = {
     principal: `${nombreMes(estado.confesados.mes)} · ${nHechos} de ${mensuales.length} confesados`,
-    alumnos: !cuando.dia ? 'Fin de semana' : `${DIA_LARGO[cuando.dia]} · ${franja ? `${franja.franja} · ${franja.inicio}` : 'fuera de franja'}`,
+    alumnos: `${alumnos.length} alumnos`,
     ajustes: `${datos.alumnos.length} alumnos · ${Object.keys(datos.grupos).length} grupos`,
   }[pestana];
-  const ctx: Ctx = { datos, estado, setEstado, alumnos, cuando, setCuando, abrirMenu: setMenuDe };
+  const ctx: Ctx = { datos, estado, setEstado, alumnos, cuando, abrirMenu: setMenuDe };
 
   const botonesNav = NAV.map(([id, txt, ico]) => (
     <button key={id} class={pestana === id ? 'activa' : ''} aria-current={pestana === id ? 'page' : undefined} onClick={() => ir(id)}>

@@ -16,8 +16,8 @@ const TRAZOS = {
   luna: 'M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z',
   letra: 'M4 7V5h10v2M9 5v14M7 19h4M14 13v-1h6v1M17 12v7M16 19h2',
   campana: 'M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4',
+  ojo: 'M3 12c1-3 4.5-7 9-7s8 4 9 7c-1 3-4.5 7-9 7s-8-4-9-7zM14.5 12a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0z',
   volver: 'M15 6l-6 6 6 6',
-  reloj: 'M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0zM12 7v5l3 2',
 } as const;
 
 export type NombreIcono = keyof typeof TRAZOS;

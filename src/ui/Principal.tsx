@@ -15,7 +15,6 @@ export function Principal({ datos, estado, setEstado, alumnos, abrirMenu }: Ctx)
   const pendientes = mensuales.filter((a) => !hechos.has(a.expediente))
     .map((a) => ({ a, c: donde(a) }))
     .sort((x, y) => plantaDe(x.c) - plantaDe(y.c) || x.a.apellidos.localeCompare(y.a.apellidos, 'es'));
-  const enClase = pendientes.filter((p) => p.c?.opciones.length).length;
   const confesados = mensuales.filter((a) => hechos.has(a.expediente));
 
   const porGrupo = Object.keys(datos.grupos).sort().map((g) => {
@@ -39,7 +38,6 @@ export function Principal({ datos, estado, setEstado, alumnos, abrirMenu }: Ctx)
         <div class="kpis">
           <div><strong class="dorado">{nHechos}</strong><span>confesados</span></div>
           <div><strong>{mensuales.length - nHechos}</strong><span>pendientes</span></div>
-          <div><strong>{enClase}</strong><span>pendientes en clase ahora</span></div>
         </div>
       </section>
 

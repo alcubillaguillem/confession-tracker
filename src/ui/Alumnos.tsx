@@ -2,14 +2,14 @@ import { useMemo, useState } from 'preact/hooks';
 import { alternarMensual, esMensual, textoBusqueda } from '../almacen';
 import { norm } from '../domain/catalogo';
 import { consultar } from '../domain/resolver';
-import { FilaAlumno, SelectorCuando, textoUbicacion, type Ctx } from './comun';
+import { FilaAlumno, textoUbicacion, type Ctx } from './comun';
 import { Icono } from './iconos';
 
 const PAGINA = 20;
 const inicial = (s: string) => norm(s).charAt(0).toUpperCase();
 
 /** Todos los alumnos por orden alfabético (de 20 en 20), con buscador y dónde está cada uno. */
-export function Alumnos({ datos, estado, setEstado, alumnos, cuando, setCuando, abrirMenu }: Ctx) {
+export function Alumnos({ datos, estado, setEstado, alumnos, cuando, abrirMenu }: Ctx) {
   const [q, setQ] = useState('');
   const [soloMensual, setSoloMensual] = useState(false);
   const [mostrar, setMostrar] = useState(PAGINA);
@@ -35,7 +35,6 @@ export function Alumnos({ datos, estado, setEstado, alumnos, cuando, setCuando, 
           onInput={(e) => { const v = e.currentTarget.value; filtrar(() => setQ(v)); }} />
       </label>
       <div class="chips">
-        <SelectorCuando datos={datos} cuando={cuando} setCuando={setCuando} />
         <button class="chip" aria-pressed={soloMensual} onClick={() => filtrar(() => setSoloMensual(!soloMensual))}><Icono n="cruz" />Mensual</button>
       </div>
 

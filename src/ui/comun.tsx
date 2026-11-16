@@ -12,7 +12,7 @@ export type Pestana = 'principal' | 'alumnos' | 'ajustes';
 /** Lo que comparten las pantallas. */
 export type Ctx = {
   datos: Datos; estado: Estado; setEstado: Actualizar; alumnos: Alumno[];
-  cuando: Cuando; setCuando: (c: Cuando) => void;
+  cuando: Cuando; // siempre el momento actual
   abrirMenu: (a: Alumno) => void;
 };
 
@@ -53,22 +53,6 @@ export const Barra = ({ hechos, total }: { hechos: number; total: number }) => (
   </svg>
 );
 
-export function SelectorCuando({ datos, cuando, setCuando }: { datos: Datos; cuando: Cuando; setCuando: (c: Cuando) => void }) {
-  return (
-    <div class="chips">
-      <select class="chip" aria-label="Día" value={cuando.dia} onChange={(e) => setCuando({ ...cuando, dia: e.currentTarget.value as Dia | '' })}>
-        <option value="">Día</option>
-        {DIAS.map((d) => <option key={d} value={d}>{DIA_LARGO[d]}</option>)}
-      </select>
-      <select class="chip" aria-label="Franja" value={cuando.franja} onChange={(e) => setCuando({ ...cuando, franja: e.currentTarget.value })}>
-        <option value="">Franja</option>
-        {datos.franjas.map((f) => <option key={f.franja} value={f.franja}>{f.franja} · {f.inicio}</option>)}
-      </select>
-      <button class="chip" onClick={() => setCuando(ahora(datos))}><Icono n="reloj" />Ahora</button>
-    </div>
-  );
-}
-
 const iniciales = (a: Alumno, e: Estado) =>
   nombreDe(a, e).split(' ').slice(0, 2).map((p) => p[0] ?? '').join('').toUpperCase();
 
@@ -87,7 +71,7 @@ export function FilaAlumno(p: FilaProps) {
   const abrir = () => { largo.current = true; p.onMenu(p.a); };
   return (
     <li class={`fila-alumno${p.activa ? ' activa' : ''}${p.tachada ? ' tachada' : ''}`}
-      onPointerDown={(e) => { if (e.button) return; largo.current = false; cancelar(); t.current = window.setTimeout(abrir, 500); }}
+      onPointerDown={(e) => { largo.current = false; cancelar(); if (!e.button) t.current = window.setTimeout(abrir, 500); }}
       onPointerUp={cancelar} onPointerLeave={cancelar} onPointerCancel={cancelar}
       onContextMenu={(e) => { e.preventDefault(); cancelar(); if (!largo.current) abrir(); }}>
       <button class="fila-principal" onClick={() => { if (largo.current) largo.current = false; else p.onTap?.(); }}>
@@ -107,14 +91,52 @@ type MenuProps = { a: Alumno; estado: Estado; setEstado: Actualizar; verHorario:
 
 export function MenuAlumno({ a, estado, setEstado, verHorario, cerrar }: MenuProps) {
   const ref = useRef<HTMLDialogElement>(null);
+  const arrastre = useRef<{ y: number; t: number; dy: number } | null>(null);
+  const arrastrado = useRef(false);
   const [editando, setEditando] = useState(false);
   const [apodo, setApodo] = useState(estado.apodos[a.expediente] ?? '');
   useEffect(() => { ref.current?.showModal(); }, []);
-  const aplicar = (f: (e: Estado) => Estado) => { setEstado(f); cerrar(); };
   const mensual = esMensual(a, estado);
 
+  /** Cierre animado: la hoja baja (o se desvanece en escritorio) y después se desmonta. */
+  const salir = (despues?: () => void) => {
+    const d = ref.current;
+    if (!d || d.classList.contains('saliendo')) return;
+    d.classList.remove('arrastrando');
+    d.style.transform = '';
+    d.classList.add('saliendo');
+    const fin = () => { cerrar(); despues?.(); };
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) fin(); else setTimeout(fin, 260);
+  };
+  const aplicar = (f: (e: Estado) => Estado) => { setEstado(f); salir(); };
+
+  // Deslizar hacia abajo para cerrar (pantallas táctiles).
+  const empezar = (e: PointerEvent) => {
+    if (e.pointerType === 'mouse' || (e.target as HTMLElement).closest('input')) return;
+    arrastre.current = { y: e.clientY, t: e.timeStamp, dy: 0 };
+    arrastrado.current = false;
+  };
+  const mover = (e: PointerEvent) => {
+    const r = arrastre.current;
+    const d = ref.current;
+    if (!r || !d) return;
+    r.dy = Math.max(0, e.clientY - r.y);
+    if (r.dy > 6) { arrastrado.current = true; d.classList.add('arrastrando'); d.style.transform = `translateY(${r.dy}px)`; }
+  };
+  const soltar = (e: PointerEvent) => {
+    const r = arrastre.current;
+    arrastre.current = null;
+    if (!r || !arrastrado.current) return;
+    const rapido = r.dy / Math.max(1, e.timeStamp - r.t) > 0.6;
+    if (r.dy > 90 || rapido) salir();
+    else { ref.current?.classList.remove('arrastrando'); if (ref.current) ref.current.style.transform = ''; }
+  };
+
   return (
-    <dialog ref={ref} class="hoja" onClose={cerrar} onClick={(e) => { if (e.target === ref.current) ref.current?.close(); }}>
+    <dialog ref={ref} class="hoja" onClose={cerrar} onCancel={(e) => { e.preventDefault(); salir(); }}
+      onPointerDown={empezar} onPointerMove={mover} onPointerUp={soltar} onPointerCancel={soltar}
+      onClickCapture={(e) => { if (arrastrado.current) { e.stopPropagation(); e.preventDefault(); arrastrado.current = false; } }}
+      onClick={(e) => { if (e.target === ref.current) salir(); }}>
       <div class="hoja-asa" />
       <p class="hoja-titulo" tabIndex={-1} autofocus>{nombreDe(a, estado)} <span class="tenue">· {a.grupo}</span></p>
       {editando ? (
@@ -133,7 +155,7 @@ export function MenuAlumno({ a, estado, setEstado, verHorario, cerrar }: MenuPro
           <li><button onClick={() => aplicar(alternarMensual(a))}><Icono n="cruz" class="dorado" />
             {mensual ? 'Quitar de confesión mensual' : 'Poner en confesión mensual'}</button></li>
           <li><button onClick={() => setEditando(true)}><Icono n="lapiz" />Cambiar nombre</button></li>
-          <li><button onClick={() => { cerrar(); verHorario(a); }}><Icono n="horario" />Ver horario</button></li>
+          <li><button onClick={() => salir(() => verHorario(a))}><Icono n="horario" />Ver horario</button></li>
           <li><button class="peligro" onClick={() => {
             if (confirm(`¿Eliminar a ${nombreDe(a, estado)} de la app? Se borrarán sus marcas y su apodo. Puedes recuperarlo en Ajustes → Alumnos ocultos.`)) aplicar(ocultar(a.expediente));
           }}><Icono n="ocultar" />Eliminar de la lista</button></li>

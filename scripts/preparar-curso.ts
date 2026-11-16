@@ -1,10 +1,10 @@
 // Prepara los datos de un curso sin pasar por la app (procedimiento: skill `preparar-curso`).
 //   npm run preparar -- horarios_y_alumnos/2026-27 [--publicar]   (con --publicar: variable CT_CONTRASENA)
-// Entrada:  <carpeta>/listas/*.docx (listas del colegio) y <carpeta>/tablas/*.csv (las otras 7 tablas).
+// Entrada:  <carpeta>/listas/*.docx (listas del colegio), <carpeta>/tablas/*.csv (las otras 7 tablas) y, opcional, <carpeta>/confesion_mensual.csv.
 // Salida:   <carpeta>/alumnos.csv (para revisar).
 // --publicar: además cifra el curso con la contraseña de CT_CONTRASENA en public/curso.enc (la contraseña no se guarda).
 // Usa el mismo lector y las mismas validaciones que la app. No envía nada a ningún sitio.
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { cifrar } from '../src/domain/cifrado.ts';
 import { TABLAS, type Crudas } from '../src/domain/esquemas.ts';
@@ -22,6 +22,14 @@ for (const f of docx) {
   const r = alumnosDeDocx(await leerZip(readFileSync(join(carpeta, 'listas', f)), 'word/document.xml'));
   alumnos.push(...r.filas);
   avisos.push(...r.avisos);
+}
+// Opcional: <carpeta>/confesion_mensual.csv (columna expediente) → quedan marcados en confesión mensual.
+const rutaMensual = join(carpeta, 'confesion_mensual.csv');
+if (existsSync(rutaMensual)) {
+  const mensual = new Set(leerCsv(readFileSync(rutaMensual, 'utf8')).map((f) => f.expediente?.trim()));
+  for (const a of alumnos) if (mensual.has(a.expediente)) a.confesion_mensual = 'si';
+  const faltan = [...mensual].filter((e) => e && !alumnos.some((a) => a.expediente === e));
+  avisos.push(`Confesión mensual: ${alumnos.filter((a) => a.confesion_mensual).length} marcados`, ...faltan.map((e) => `confesión mensual: expediente ${e} no está en las listas`));
 }
 const crudas: Crudas = { alumnos };
 for (const t of TABLAS.filter((t) => t !== 'alumnos')) crudas[t] = leerCsv(readFileSync(join(carpeta, 'tablas', `${t}.csv`), 'utf8'));

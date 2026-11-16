@@ -65,7 +65,7 @@ button:disabled { opacity: .45; cursor: default; }
 :root.oscuro .anillo-fondo { stroke: var(--morado-800); }
 .anillo-valor { stroke: var(--oro); stroke-linecap: round; }
 .anillo text { fill: var(--texto); font-size: 8px; font-weight: 600; }
-.kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; flex: 1; }
+.kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; flex: 1; }
 .kpis strong { display: block; font-size: 1.6rem; line-height: 1.1; color: var(--texto); }
 .kpis span { font-size: .8rem; color: var(--tinte-texto); }
 .kpis .dorado { color: var(--oro-texto); }
@@ -82,9 +82,14 @@ button:disabled { opacity: .45; cursor: default; }
 .desbloqueo form { width: 100%; max-width: 340px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
 .desbloqueo h1 { color: var(--oro-claro); font-size: 1.4rem; }
 .desbloqueo p { color: var(--morado-200); margin: 0; }
-.desbloqueo input { width: 100%; border-radius: 999px; text-align: center; background: #fff; color: #1D1B2E; }
+.campo-clave { width: 100%; display: flex; flex-direction: column; gap: 6px; text-align: left; color: var(--morado-200); font-weight: 600; font-size: .9rem; }
+.clave-caja { display: flex; align-items: center; background: #fff; border-radius: 12px; padding-right: 4px; }
+.clave-caja input { width: 100%; border: 0; outline: none; background: transparent; color: #1D1B2E; font-size: 1rem; min-height: 46px; padding: 0 14px; }
+.clave-caja:focus-within { outline: 3px solid var(--oro); outline-offset: 2px; }
+.clave-caja .icono-btn { color: #6B6880; }
+.clave-caja .icono-btn:hover { background: #EEEDFE; }
 .aviso-error { color: #FFB4AB !important; font-weight: 600; }
-.boton.dorado-lleno { width: 100%; background: var(--oro-claro); border-color: var(--oro-claro); color: var(--morado-900); }
+.boton.dorado-lleno { width: 100%; min-height: 46px; background: var(--oro-claro); border-color: var(--oro-claro); color: var(--morado-900); }
 .barra { width: 100%; height: 8px; display: block; }
 .barra-fondo { fill: var(--tinte); }
 .barra-valor { fill: var(--oro); }
@@ -146,7 +151,7 @@ select.chip { appearance: none; padding-right: 14px; }
 .botones { display: flex; gap: 8px; align-items: center; }
 
 
-.hoja-form input, .desbloqueo input {
+.hoja-form input {
   flex: 1; min-height: 44px; padding: 0 14px; border: 1px solid var(--borde); border-radius: 12px;
   background: var(--superficie); color: var(--texto);
 }
@@ -158,6 +163,19 @@ dialog.hoja {
   background: var(--superficie); color: var(--texto); padding: 8px 20px calc(16px + env(safe-area-inset-bottom));
 }
 dialog.hoja::backdrop { background: rgba(20, 18, 42, .55); }
+/* Entrada y salida suaves; arrastrar hacia abajo para cerrar (móvil) */
+dialog.hoja { touch-action: none; transition: transform .26s cubic-bezier(.2, .8, .2, 1), opacity .26s ease; }
+dialog.hoja[open] { animation: hoja-sube .32s cubic-bezier(.2, .8, .2, 1); }
+dialog.hoja[open]::backdrop { animation: fondo-aparece .32s ease; transition: opacity .26s ease; }
+dialog.hoja.arrastrando { transition: none; }
+dialog.hoja.saliendo { transform: translateY(105%); }
+dialog.hoja.saliendo::backdrop { opacity: 0; }
+@keyframes hoja-sube { from { transform: translateY(100%); } }
+@keyframes fondo-aparece { from { opacity: 0; } }
+@keyframes hoja-aparece { from { opacity: 0; transform: translateY(12px) scale(.97); } }
+@media (prefers-reduced-motion: reduce) {
+  dialog.hoja, dialog.hoja[open], dialog.hoja[open]::backdrop { animation: none; transition: none; }
+}
 .hoja-asa { width: 40px; height: 4px; border-radius: 999px; background: var(--borde); margin: 4px auto 12px; }
 .hoja-titulo { font-weight: 600; margin: 0 0 6px; outline: none; }
 .hoja-acciones { list-style: none; margin: 0; padding: 0; }
@@ -238,6 +256,8 @@ th small { display: block; color: var(--tenue); font-weight: 400; }
   .panel .progreso { grid-column: 1 / -1; }
   .panel .ancha { grid-column: 1; grid-row: 2; }
   dialog.hoja { margin: auto; max-width: 380px; border-radius: 18px; padding-bottom: 16px; }
+  dialog.hoja[open] { animation-name: hoja-aparece; }
+  dialog.hoja.saliendo { transform: translateY(12px) scale(.97); opacity: 0; }
   dialog.hoja .hoja-asa { display: none; }
   .ajustes, .contenido > section { max-width: 860px; }
 }

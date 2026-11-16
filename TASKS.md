@@ -63,3 +63,5 @@ Formato y ciclo: skill `flujo-tareas`.
   - Archivos: src/ui/DondeEstan.tsx, src/ui/Buscar.tsx, src/ui/App.tsx, src/almacen.ts
 - [x] T25 · Contraseña al abrir (datos cifrados en la app), pestañas Principal (dashboard) / Alumnos (A-Z, de 20 en 20, buscador) / Ajustes; fuera importar, exportar, restaurar, borrar y enlace
   - Archivos: src/ui/{Desbloqueo,Principal,Alumnos,Ajustes,App}.tsx, src/almacen.ts, src/domain/cifrado.ts
+- [x] T26 · Confesión mensual precargada (57, desde la hoja de confesiones vía confesion_mensual.csv); Principal solo confesados/pendientes; menú con animación y deslizar para cerrar; Alumnos sin selector de día; inicio de sesión estándar
+  - Archivos: scripts/preparar-curso.ts, src/ui/{Principal,Alumnos,Desbloqueo,App,comun}.tsx, src/ui/estilos.css

@@ -33,6 +33,11 @@ Partir de la carpeta `tablas/` del curso anterior: suele cambiar solo `horarios`
 - Sin Claude Code: usar el prompt de `docs/prompt-transcribir-horarios.md` adjuntando solo las fotos (devuelve un Excel; sus hojas se pueden guardar como los CSV de `tablas/`).
 - Ante cualquier celda dudosa, **preguntar**, no adivinar.
 
+## 2b. Confesión mensual (opcional)
+Si hay hoja de quién se confiesa cada mes, cruzarla con las listas (nombre + apellido + grupo; ojo con apodos, guiones y
+partículas como «de») y guardar los expedientes en `horarios_y_alumnos/<curso>/confesion_mensual.csv` (columna `expediente`).
+El script los deja marcados; los nombres que no estén en las listas no se pueden marcar (avisar al usuario).
+
 ## 3. Generar y validar
 ```bash
 npm run preparar -- horarios_y_alumnos/<curso>             # solo validar
