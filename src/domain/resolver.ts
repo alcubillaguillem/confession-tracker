@@ -1,5 +1,5 @@
-import { COMUNES, DIAS, norm, type Dia } from './catalogo';
-import { buscarAula, type Alumno, type Datos } from './importar';
+import { COMUNES, DIAS, norm, type Dia } from './catalogo.ts';
+import { buscarAula, type Alumno, type Datos } from './importar.ts';
 
 export type Ubicacion = { asignatura: string; aula: string; supuesta: boolean };
 /** opciones vacías → `mensaje`; más de una → horario ambiguo. */

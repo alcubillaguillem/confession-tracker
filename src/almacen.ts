@@ -1,7 +1,7 @@
 import { clear, get, set } from 'idb-keyval';
 import { z } from 'zod';
-import { TABLAS, type Crudas } from './domain/esquemas';
-import { construir, MAX_BYTES, type Alumno } from './domain/importar';
+import { TABLAS, type Crudas } from './domain/esquemas.ts';
+import { construir, MAX_BYTES, type Alumno } from './domain/importar.ts';
 
 // El CSV importado (crudas) nunca se modifica. Lo que hace el usuario vive aparte, en `estado`.
 const exps = z.array(z.string().max(12)).max(5000);

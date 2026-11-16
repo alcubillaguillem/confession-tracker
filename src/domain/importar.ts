@@ -1,6 +1,6 @@
 import Papa from 'papaparse';
-import { canon, DIAS, norm, type Dia } from './catalogo';
-import { ESQUEMAS, TABLAS, type Crudas, type Fila, type Tabla } from './esquemas';
+import { canon, DIAS, norm, type Dia } from './catalogo.ts';
+import { ESQUEMAS, TABLAS, type Crudas, type Fila, type Tabla } from './esquemas.ts';
 
 export const MAX_BYTES = 5 * 1024 * 1024;
 

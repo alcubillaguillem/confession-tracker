@@ -49,3 +49,9 @@ Formato y ciclo: skill `flujo-tareas`.
 - [x] T18 · Estilos morado y dorado, modo oscuro, móvil y escritorio
   - Archivos: src/ui/estilos.css · Agente: implementador
 - [x] T19 · Verificación en navegador y revisión de seguridad · Agente: revisor-seguridad
+
+## Preparación anual de datos
+- [x] T20 · Script `npm run preparar`: listas del colegio (.docx) → alumnos.csv, validación con las reglas de la app y archivo único .json
+  - Archivos: scripts/preparar-curso.ts · Acepta: 298 alumnos 2026-27, 0 ambiguos, idéntico al CSV de la especificación
+- [x] T21 · Skill `preparar-curso` y prompt de transcripción para delegar
+  - Archivos: .claude/skills/preparar-curso/, docs/prompt-transcribir-horarios.md

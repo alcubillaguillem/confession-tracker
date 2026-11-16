@@ -1,6 +1,6 @@
 # ¿Dónde está? — PWA localizador de alumnos
 
-Fuente de verdad: `horarios_y_alumnos/Claude outputs/app-confesiones-especificacion.md`. Las imágenes, XLSX y DOCX de esa carpeta **no se usan**.
+Fuente de verdad: `horarios_y_alumnos/Claude outputs/app-confesiones-especificacion.md`. Las imágenes, XLSX y DOCX sueltos de esa carpeta no se usan directamente: cada curso se prepara en `horarios_y_alumnos/<curso>/` con la skill `preparar-curso`.
 
 ## Reglas
 - Seguridad y privacidad: skill `seguridad-privacidad` (obligatoria en todo cambio).
@@ -18,6 +18,7 @@ Fuente de verdad: `horarios_y_alumnos/Claude outputs/app-confesiones-especificac
 - `public/sw.js` offline. Icono: estola dorada sobre morado (`icon.svg` + PNG 180/192/512).
 - Grafo: `graphify update .` (solo código, local). `graphify query "..." --budget 800` para consultar.
 - `data/ejemplo/` datos de prueba (alumnos ficticios 9000xx).
+- Datos de cada curso: skill `preparar-curso` → `npm run preparar -- horarios_y_alumnos/<curso>` genera el `.json` que el sacerdote importa. Las listas de alumnos nunca pasan por una IA externa.
 
 ## Comandos
-`npm run dev` · `npm test` · `npm run build` · `npm audit`
+`npm run dev` · `npm test` · `npm run build` · `npm audit` · `npm run preparar -- <carpeta>`
