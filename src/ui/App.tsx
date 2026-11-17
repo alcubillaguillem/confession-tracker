@@ -8,11 +8,12 @@ import { Alumnos } from './Alumnos';
 import { ahora, Barra, MenuAlumno, nombreMes, type Ctx, type Cuando, type Pestana } from './comun';
 import { Desbloqueo } from './Desbloqueo';
 import { Horario } from './Horario';
+import { Lista } from './Lista';
 import { Icono, type NombreIcono } from './iconos';
 import { Principal } from './Principal';
 
 const NAV: [Pestana, string, NombreIcono][] = [
-  ['principal', 'Principal', 'principal'], ['alumnos', 'Alumnos', 'alumnos'], ['ajustes', 'Ajustes', 'ajustes'],
+  ['principal', 'Principal', 'principal'], ['lista', 'Lista', 'lista'], ['alumnos', 'Alumnos', 'alumnos'], ['ajustes', 'Ajustes', 'ajustes'],
 ];
 
 export function App() {
@@ -66,10 +67,11 @@ export function App() {
   const ir = (p: Pestana) => { setPestana(p); setHorarioDe(null); };
   const subtitulo = {
     principal: `${nombreMes(estado.confesados.mes)} · ${nHechos} de ${mensuales.length} confesados`,
+    lista: `${estado.lista.exps.length - estado.lista.hechos.length} por confesar`,
     alumnos: `${alumnos.length} alumnos`,
     ajustes: `${datos.alumnos.length} alumnos · ${Object.keys(datos.grupos).length} grupos`,
   }[pestana];
-  const ctx: Ctx = { datos, estado, setEstado, alumnos, cuando, abrirMenu: setMenuDe };
+  const ctx: Ctx = { datos, estado, setEstado, alumnos, cuando, abrirMenu: setMenuDe, avisar: setBanner };
 
   const botonesNav = NAV.map(([id, txt, ico]) => (
     <button key={id} class={pestana === id ? 'activa' : ''} aria-current={pestana === id ? 'page' : undefined} onClick={() => ir(id)}>
@@ -98,6 +100,7 @@ export function App() {
         <main class="contenido">
           {horarioDe ? <Horario datos={datos} estado={estado} alumno={horarioDe} volver={() => setHorarioDe(null)} />
             : pestana === 'principal' ? <Principal {...ctx} />
+            : pestana === 'lista' ? <Lista {...ctx} />
             : pestana === 'alumnos' ? <Alumnos {...ctx} />
             : <Ajustes datos={datos} estado={estado} setEstado={setEstado} />}
         </main>

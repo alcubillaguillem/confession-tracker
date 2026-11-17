@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { construir, type Alumno } from './importar';
 import { crudasEjemplo } from './prueba';
-import { agruparPorAula, asignaturasDe, asignaturasFiltrables, consultar, franjaDe, modalidadDe } from './resolver';
+import { agruparPorAula, asignaturasDe, asignaturasFiltrables, consultar, franjaDe, modalidadDe, momentosDe } from './resolver';
 
 const datos = construir(crudasEjemplo()).datos!;
 const alumno = (grupo: string, opcion: string, optativa: string): Alumno =>
@@ -84,5 +84,15 @@ describe('filtros por modalidad y asignatura', () => {
     expect(asignaturasDe(datos, alumno('1D', '5', 'ECO')).sort()).toEqual(['Economía', 'Historia Mundo', 'Latín I', 'Literatura Universal']);
     expect(asignaturasFiltrables(datos)).toEqual(expect.arrayContaining(['Economía', 'Latín I', 'Computación', 'Anatomía']));
     expect(asignaturasFiltrables(datos)).not.toContain('Religión');
+  });
+});
+
+describe('momentosDe', () => {
+  it('franja actual y siguiente (salta el recreo); fin de semana sin día', () => {
+    const m = momentosDe(datos, new Date(2026, 10, 16, 10, 40)); // lunes, F3
+    expect([m.dia, m.actual?.franja, m.siguiente?.franja]).toEqual(['lunes', 'F3', 'F4']);
+    const temprano = momentosDe(datos, new Date(2026, 10, 16, 7, 50));
+    expect([temprano.actual, temprano.siguiente?.franja]).toEqual([undefined, 'F1']);
+    expect(momentosDe(datos, new Date(2026, 10, 15, 10, 40)).dia).toBeUndefined();
   });
 });

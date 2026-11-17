@@ -1,19 +1,19 @@
 import type { ComponentChildren } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { alternarConfesado, alternarMensual, esMensual, nombreDe, ocultar, ponerApodo, type Actualizar, type Estado } from '../almacen';
+import { alternarConfesado, alternarLista, alternarMensual, enLista, esMensual, nombreDe, ocultar, ponerApodo, type Actualizar, type Estado } from '../almacen';
 import { DIAS, type Dia } from '../domain/catalogo';
 import type { Alumno, Datos } from '../domain/importar';
 import { franjaDe, type Consulta } from '../domain/resolver';
 import { Icono } from './iconos';
 
 export type Cuando = { dia: Dia | ''; franja: string };
-export type Pestana = 'principal' | 'alumnos' | 'ajustes';
+export type Pestana = 'principal' | 'lista' | 'alumnos' | 'ajustes';
 
 /** Lo que comparten las pantallas. */
 export type Ctx = {
   datos: Datos; estado: Estado; setEstado: Actualizar; alumnos: Alumno[];
   cuando: Cuando; // siempre el momento actual
-  abrirMenu: (a: Alumno) => void;
+  abrirMenu: (a: Alumno) => void; avisar: (texto: string) => void;
 };
 
 /** Al abrir: hoy y la franja actual; fuera de franja, sin franja; en fin de semana, sin día. */
@@ -157,6 +157,8 @@ export function MenuAlumno({ a, estado, setEstado, verHorario, cerrar }: MenuPro
             {confesado ? 'Quitar confesado' : 'Marcar como confesado'}</button></li>}
           <li><button onClick={() => aplicar(alternarMensual(a))}><Icono n="cruz" class="dorado" />
             {mensual ? 'Quitar de confesión mensual' : 'Poner en confesión mensual'}</button></li>
+          <li><button onClick={() => aplicar(alternarLista(a.expediente))}><Icono n="lista" />
+            {enLista(a.expediente, estado) ? 'Quitar de la lista' : 'Añadir a la lista'}</button></li>
           <li><button onClick={() => setEditando(true)}><Icono n="lapiz" />Cambiar nombre</button></li>
           <li><button onClick={() => salir(() => verHorario(a))}><Icono n="horario" />Ver horario</button></li>
           <li><button class="peligro" onClick={() => {

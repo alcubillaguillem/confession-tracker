@@ -13,6 +13,8 @@ const ESTADO = z.object({
   prefs: z.object({ oscuro: z.boolean() }),
   ocultos: exps.default([]), // "eliminados" por el usuario; el CSV no cambia
   apodos: z.record(z.string().max(12), z.string().trim().min(1).max(60)).default({}),
+  // Lista para confesar: dura hasta que todos estén confesados.
+  lista: z.object({ exps, hechos: exps }).default({ exps: [], hechos: [] }),
 });
 const CRUDAS = z.partialRecord(z.enum(TABLAS), z.array(z.record(z.string(), z.string())).max(5000));
 const CURSO = z.object({ version: z.literal(1), id: z.string().max(100), crudas: CRUDAS });
@@ -25,7 +27,7 @@ export const mesDe = (f: Date) => `${f.getFullYear()}-${String(f.getMonth() + 1)
 
 export const estadoVacio = (prefs = { oscuro: true }): Estado => { // modo oscuro por defecto
   const mes = mesDe(new Date());
-  return { mensual: {}, confesados: { mes, exps: [] }, avisos: { mes, enviados: [] }, prefs, ocultos: [], apodos: {} };
+  return { mensual: {}, confesados: { mes, exps: [] }, avisos: { mes, enviados: [] }, prefs, ocultos: [], apodos: {}, lista: { exps: [], hechos: [] } };
 };
 
 /** Las marcas mensuales caducan al cambiar de mes. */
@@ -90,6 +92,33 @@ export const alternarConfesado = (exp: string) => (e: Estado): Estado => {
   return { ...e, confesados: { ...e.confesados, exps: exps.includes(exp) ? exps.filter((x) => x !== exp) : [...exps, exp] } };
 };
 
+export const enLista = (exp: string, e: Estado) => e.lista.exps.includes(exp);
+
+/** Añade o quita al alumno de la lista para confesar. */
+export const alternarLista = (exp: string) => (e: Estado): Estado => {
+  const esta = enLista(exp, e);
+  return {
+    ...e,
+    lista: {
+      exps: esta ? e.lista.exps.filter((x) => x !== exp) : [...e.lista.exps, exp],
+      hechos: e.lista.hechos.filter((x) => x !== exp),
+    },
+  };
+};
+
+/**
+ * Marca o desmarca como confesado dentro de la lista (también cuenta como confesado del mes).
+ * Cuando todos los de la lista están confesados, la lista se vacía sola.
+ */
+export const confesarEnLista = (exp: string) => (e: Estado): Estado => {
+  const hecho = e.lista.hechos.includes(exp);
+  const hechos = hecho ? e.lista.hechos.filter((x) => x !== exp) : [...e.lista.hechos, exp];
+  const mes = e.confesados.exps;
+  const confesados = { ...e.confesados, exps: hecho ? mes.filter((x) => x !== exp) : [...new Set([...mes, exp])] };
+  const completa = e.lista.exps.length > 0 && e.lista.exps.every((x) => hechos.includes(x));
+  return { ...e, confesados, lista: completa ? { exps: [], hechos: [] } : { exps: e.lista.exps, hechos } };
+};
+
 export const ponerApodo = (exp: string, apodo: string) => (e: Estado): Estado => {
   const { [exp]: _, ...apodos } = e.apodos;
   const limpio = apodo.trim().slice(0, 60);
@@ -102,6 +131,7 @@ export const ocultar = (exp: string) => (e: Estado): Estado => {
   const { [exp]: _a, ...apodos } = e.apodos;
   return {
     ...e, mensual, apodos,
+    lista: { exps: e.lista.exps.filter((x) => x !== exp), hechos: e.lista.hechos.filter((x) => x !== exp) },
     ocultos: [...new Set([...e.ocultos, exp])],
     confesados: { ...e.confesados, exps: e.confesados.exps.filter((x) => x !== exp) },
   };

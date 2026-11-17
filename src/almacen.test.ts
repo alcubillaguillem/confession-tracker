@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { alternarConfesado, alternarMensual, esMensual, estadoVacio, nombreDe, ocultar, mostrar, ponerApodo, textoBusqueda, visibles } from './almacen';
+import { alternarConfesado, alternarLista, alternarMensual, confesarEnLista, esMensual, estadoVacio, nombreDe, ocultar, mostrar, ponerApodo, textoBusqueda, visibles } from './almacen';
 import type { Alumno } from './domain/importar';
 
 const ana: Alumno = { expediente: '900001', apellidos: 'Prueba Uno', nombre: 'Ana', grupo: '1B', opcion: '2', optativa: 'ANAT', confesionMensual: true };
@@ -34,5 +34,17 @@ describe('estado del usuario', () => {
     expect(visibles([ana, luis], e)).toEqual([ana]);
     expect(e).toMatchObject({ mensual: {}, apodos: {}, confesados: { exps: [] } });
     expect(visibles([ana, luis], mostrar('900002')(e))).toEqual([ana, luis]);
+  });
+
+  it('lista: añadir, confesar (cuenta en el mes) y se vacía al completarla', () => {
+    let e = alternarLista('900002')(alternarLista('900001')(estadoVacio()));
+    expect(e.lista).toEqual({ exps: ['900001', '900002'], hechos: [] });
+    e = confesarEnLista('900001')(e);
+    expect(e.lista.hechos).toEqual(['900001']);
+    expect(e.confesados.exps).toEqual(['900001']);
+    expect(confesarEnLista('900001')(e).confesados.exps).toEqual([]);
+    e = confesarEnLista('900002')(e);
+    expect(e.lista).toEqual({ exps: [], hechos: [] });
+    expect(e.confesados.exps.sort()).toEqual(['900001', '900002']);
   });
 });

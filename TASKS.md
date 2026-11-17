@@ -71,3 +71,5 @@ Formato y ciclo: skill `flujo-tareas`.
   - Archivos: src/domain/resolver.ts (modalidad, asignaturasFiltrables), src/ui/Alumnos.tsx, src/ui/estilos.css
 - [x] T29 · Service worker: la página se revalida siempre con el servidor (evita ver la versión antigua por la caché de 10 min de GitHub Pages)
   - Archivos: public/sw.js
+- [x] T30 · Pestaña Lista: panel en tiempo real (aula ahora y después) de los alumnos a confesar; se añaden con buscador o desde el menú; dura hasta confesarlos a todos
+  - Archivos: src/ui/Lista.tsx, src/almacen.ts (lista), src/domain/resolver.ts (momentosDe), src/ui/{App,comun,iconos}.tsx, src/ui/estilos.css

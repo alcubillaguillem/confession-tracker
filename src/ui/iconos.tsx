@@ -2,6 +2,7 @@
 const TRAZOS = {
   buscar: 'M16 10a6 6 0 1 1-12 0a6 6 0 0 1 12 0zM20 20l-5.6-5.6',
   principal: 'M4 4h7v9H4zM13 4h7v5h-7zM13 11h7v9h-7zM4 15h7v5H4z',
+  lista: 'M4 6l1.5 1.5L8 5M4 12l1.5 1.5L8 11M4 18l1.5 1.5L8 17M11 6h9M11 12h9M11 18h9',
   alumnos: 'M9 11a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M16 3.1a4 4 0 0 1 0 7.8M21 21v-2a4 4 0 0 0-3-3.9',
   ajustes: 'M4 7h9M17 7h3M4 17h3M11 17h9M15 5v4M9 15v4',
   cruz: 'M12 3v18M7 8h10',

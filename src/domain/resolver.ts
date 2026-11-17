@@ -98,6 +98,18 @@ export function consultar(d: Datos, a: Alumno, dia: Dia, franja: string): Consul
 export const avisosAmbiguos = (d: Datos) => d.alumnos.filter((a) => asignaciones(d, a).length !== 1)
   .map((a) => `${a.grupo}: horario ambiguo para el expediente ${a.expediente} (opción ${a.opcion}, ${a.optativa})`);
 
+/** Franja en curso y la siguiente con clase (sin recreo) de hoy. Fin de semana → sin día. */
+export function momentosDe(d: Datos, fecha: Date) {
+  const dia = DIAS[fecha.getDay() - 1];
+  const hhmm = fecha.toTimeString().slice(0, 5);
+  const orden = [...d.franjas].sort((x, y) => x.inicio.localeCompare(y.inicio));
+  return {
+    dia,
+    actual: dia ? orden.find((f) => f.inicio <= hhmm && hhmm < f.fin) : undefined,
+    siguiente: dia ? orden.find((f) => f.inicio > hhmm && norm(f.franja) !== 'recreo') : undefined,
+  };
+}
+
 /** Día y franja de una fecha, o null si es fin de semana o fuera de horario. */
 export function franjaDe(d: Datos, fecha: Date): { dia: Dia; franja: string } | null {
   const dia = DIAS[fecha.getDay() - 1];

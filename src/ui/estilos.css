@@ -55,7 +55,7 @@ button:disabled { opacity: .45; cursor: default; }
 }
 
 .nav-inferior {
-  position: fixed; inset: auto 0 0 0; z-index: 5; display: grid; grid-template-columns: repeat(3, 1fr);
+  position: fixed; inset: auto 0 0 0; z-index: 5; display: grid; grid-template-columns: repeat(4, 1fr);
   background: var(--superficie); border-top: 1px solid var(--borde);
   padding: 4px env(safe-area-inset-right) calc(4px + env(safe-area-inset-bottom)) env(safe-area-inset-left);
 }
@@ -347,6 +347,43 @@ th small { display: block; color: var(--tenue); font-weight: 400; font-variant-n
 .celda strong { display: block; color: var(--oro-texto); font-weight: 600; }
 section > .boton:first-child + h2 { margin-top: 16px; }
 
+/* Lista para confesar: panel en tiempo real */
+.lista-dia { display: grid; gap: 16px; align-content: start; }
+.lista-dia > * { margin: 0; min-width: 0; }
+.lista-dia .resultados { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); box-shadow: var(--sombra); padding: 0 16px; }
+.lista-dia .resultados > li:last-child { border-bottom: 0; }
+.lista-dia .tarjeta.vacio { color: var(--tenue); text-align: center; padding: 32px 16px; }
+.resumen-lista { display: grid; gap: 8px; }
+.resumen-lista p { margin: 0; font-variant-numeric: tabular-nums; }
+.resumen-lista strong { font-weight: 700; }
+.resumen-lista .tenue { font-size: .875rem; }
+.lista-dia .hechos { margin-top: 0; }
+.panel-lista { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.tarjeta-alumno {
+  display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: 16px;
+  background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); box-shadow: var(--sombra);
+}
+.tarjeta-alumno header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.tarjeta-alumno header > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.tarjeta-alumno header strong { font-weight: 600; font-size: 1rem; overflow-wrap: anywhere; }
+.tarjeta-alumno header .tenue { font-size: .8125rem; }
+.tarjeta-alumno header .icono-btn { margin: -8px -8px 0 0; flex: none; }
+.ahora {
+  display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; min-width: 0;
+  background: var(--tinte); color: var(--tinte-texto); border-radius: var(--radio-s); box-shadow: inset 4px 0 0 var(--oro);
+}
+.etiqueta { font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--tenue); }
+.ahora .etiqueta { color: var(--tinte-texto); }
+.aula {
+  color: var(--oro-texto); font-size: 2rem; line-height: 1.1; font-weight: 800; letter-spacing: -.01em;
+  overflow-wrap: anywhere; font-variant-numeric: tabular-nums;
+}
+.ahora > span:last-child:not(.etiqueta) { font-size: .875rem; overflow-wrap: anywhere; }
+.despues { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; font-size: .875rem; color: var(--tenue); overflow-wrap: anywhere; }
+.tarjeta-alumno footer { display: flex; gap: 8px; margin-top: auto; }
+.tarjeta-alumno footer .boton { flex: 1 1 0; min-height: 44px; justify-content: center; }
+.tarjeta-alumno footer .boton.primario { flex: 2 1 0; }
+
 /* Movimiento reducido: sin animaciones ni transiciones */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
@@ -391,6 +428,9 @@ section > .boton:first-child + h2 { margin-top: 16px; }
   dialog.hoja.saliendo { transform: translateY(12px) scale(.97); opacity: 0; }
   dialog.hoja .hoja-asa { display: none; }
   .ajustes, .contenido > section { max-width: 860px; }
+  .contenido > section.lista-dia { max-width: 1136px; }
+  .panel-lista { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .lista-dia .resumen-lista { max-width: 860px; }
 }
 @media (min-width: 900px) and (prefers-reduced-motion: reduce) {
   dialog.hoja[open] { animation: none; }
