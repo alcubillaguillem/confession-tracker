@@ -69,3 +69,5 @@ Formato y ciclo: skill `flujo-tareas`.
   - Archivos: src/ui/{Principal,comun,Ajustes,App}.tsx, src/almacen.ts, src/ui/estilos.css, index.html, .claude/agents/disenador.md
 - [x] T28 · Filtros en Alumnos: clase, asignatura (modalidad o asignatura suelta) y «Solo confesión mensual»; recuento y «Quitar filtros»
   - Archivos: src/domain/resolver.ts (modalidad, asignaturasFiltrables), src/ui/Alumnos.tsx, src/ui/estilos.css
+- [x] T29 · Service worker: la página se revalida siempre con el servidor (evita ver la versión antigua por la caché de 10 min de GitHub Pages)
+  - Archivos: public/sw.js
