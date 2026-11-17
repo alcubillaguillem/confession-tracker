@@ -67,3 +67,5 @@ Formato y ciclo: skill `flujo-tareas`.
   - Archivos: scripts/preparar-curso.ts, src/ui/{Principal,Alumnos,Desbloqueo,App,comun}.tsx, src/ui/estilos.css
 - [x] T27 · «Ver todos» en Pendientes; marcar/quitar confesado desde el menú; modo oscuro por defecto; fuera letra grande; agente `disenador` y pasada de pulido visual
   - Archivos: src/ui/{Principal,comun,Ajustes,App}.tsx, src/almacen.ts, src/ui/estilos.css, index.html, .claude/agents/disenador.md
+- [x] T28 · Filtros en Alumnos: clase, asignatura (modalidad o asignatura suelta) y «Solo confesión mensual»; recuento y «Quitar filtros»
+  - Archivos: src/domain/resolver.ts (modalidad, asignaturasFiltrables), src/ui/Alumnos.tsx, src/ui/estilos.css

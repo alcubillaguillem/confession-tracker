@@ -165,6 +165,35 @@ button:disabled { opacity: .45; cursor: default; }
 .chip:hover { border-color: var(--acento); }
 .chip[aria-pressed="true"] { background: var(--morado-800); border-color: var(--morado-800); color: var(--oro-claro); }
 
+/* Filtros de Alumnos */
+.filtros { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; align-items: end; margin: 12px 0 4px; }
+.filtro { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.filtro > span { font-size: .75rem; font-weight: 600; letter-spacing: .04em; color: var(--tenue); padding-left: 4px; }
+.filtro select {
+  width: 100%; min-width: 0; min-height: 44px; padding: 0 12px; text-overflow: ellipsis;
+  background-color: var(--superficie); color: var(--texto); border: 1px solid var(--control); border-radius: var(--radio-s);
+  font: inherit; font-size: .9375rem; cursor: pointer; color-scheme: light;
+  transition: background-color .15s, border-color .15s;
+}
+:root.oscuro .filtro select { color-scheme: dark; }
+.filtro select:hover { border-color: var(--acento); }
+.filtro select:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; border-color: var(--acento); }
+.filtro select:not(:has(option[value=""]:checked)) { background-color: var(--tinte); border-color: var(--acento); color: var(--tinte-texto); font-weight: 600; }
+.filtros .chip { grid-column: 1 / -1; justify-content: center; min-width: 0; }
+.resumen-filtros {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 4px;
+  font-size: .8125rem; color: var(--tenue); font-variant-numeric: tabular-nums;
+}
+.enlace {
+  background: none; border: 0; padding: 0 8px; margin-right: -8px; min-height: 44px; border-radius: var(--radio-s);
+  color: var(--acento); font: inherit; font-size: .875rem; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+}
+.enlace:hover { color: var(--texto); }
+@media (min-width: 900px) {
+  .filtros { grid-template-columns: minmax(140px, 1fr) minmax(140px, 1fr) auto; }
+  .filtros .chip { grid-column: auto; }
+}
+
 /* Listas de alumnos */
 .lista { list-style: none; margin: 0; padding: 0; }
 .fila-alumno {

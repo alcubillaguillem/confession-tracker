@@ -13,6 +13,23 @@ export const asignaturasDe = (d: Datos, a: Alumno) => {
   return [...new Set([...(d.opciones[`${c}|${a.opcion}`] ?? []), d.optativas[`${c}|${a.optativa}`]!])];
 };
 
+export const MODALIDADES = ['Tecnológico', 'Ciencias', 'Sociales', 'Humanidades'] as const;
+export type Modalidad = (typeof MODALIDADES)[number];
+
+/** Modalidad según las asignaturas de la opción (no por su letra, que cambia de un curso a otro). */
+export function modalidad(asigs: string[]): Modalidad {
+  if (asigs.some((s) => s.startsWith('Dibujo Técnico') || s.startsWith('Tecnología e Ingeniería'))) return 'Tecnológico';
+  if (asigs.some((s) => s.startsWith('Mat CCSS'))) return 'Sociales';
+  if (asigs.some((s) => s.startsWith('Latín'))) return 'Humanidades';
+  return 'Ciencias';
+}
+
+export const modalidadDe = (d: Datos, a: Alumno) => modalidad(d.opciones[`${d.grupos[a.grupo]!.curso}|${a.opcion}`] ?? []);
+
+/** Asignaturas no comunes que cursa alguien (opciones y optativas), para el filtro. */
+export const asignaturasFiltrables = (d: Datos) =>
+  [...new Set([...Object.values(d.opciones).flat(), ...Object.values(d.optativas)])].sort((x, y) => x.localeCompare(y, 'es'));
+
 /** Tipos de bloque del grupo: celdas no comunes agrupadas por conjunto de asignaturas (sección 5.2). */
 function tiposDeBloque(d: Datos, grupo: string) {
   const comunes = COMUNES[d.grupos[grupo]!.curso]!;

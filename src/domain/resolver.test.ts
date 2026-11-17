@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { construir, type Alumno } from './importar';
 import { crudasEjemplo } from './prueba';
-import { agruparPorAula, consultar, franjaDe } from './resolver';
+import { agruparPorAula, asignaturasDe, asignaturasFiltrables, consultar, franjaDe, modalidadDe } from './resolver';
 
 const datos = construir(crudasEjemplo()).datos!;
 const alumno = (grupo: string, opcion: string, optativa: string): Alumno =>
@@ -68,5 +68,21 @@ describe('franjaDe y agruparPorAula', () => {
   it('agrupa por aula y ordena por planta', () => {
     const r = agruparPorAula(datos, [alumno('1B', '2', 'ECO'), alumno('2E', 'I', 'EMP'), alumno('1B', '2', 'ANAT')], 'lunes', 'F3');
     expect(r.map((g) => g.aula)).toEqual(['A. Emp', '3.3', '4.3']);
+  });
+});
+
+describe('filtros por modalidad y asignatura', () => {
+  it('modalidad según las asignaturas de cada opción', () => {
+    const m = (g: string, op: string) => modalidadDe(datos, alumno(g, op, 'C.C'));
+    expect([m('1A', '1'), m('1A', '3'), m('2A', 'A'), m('2C', 'C')]).toEqual(['Tecnológico', 'Tecnológico', 'Tecnológico', 'Tecnológico']);
+    expect([m('1B', '2'), m('2B', 'B'), m('2D', 'D')]).toEqual(['Ciencias', 'Ciencias', 'Ciencias']);
+    expect([m('1E', '4'), m('1D', '6'), m('2F', 'F'), m('2E', 'G')]).toEqual(['Sociales', 'Sociales', 'Sociales', 'Sociales']);
+    expect([m('1D', '5'), m('2E', 'I')]).toEqual(['Humanidades', 'Humanidades']);
+  });
+
+  it('asignaturas: las de la opción más la optativa; la lista del filtro las incluye', () => {
+    expect(asignaturasDe(datos, alumno('1D', '5', 'ECO')).sort()).toEqual(['Economía', 'Historia Mundo', 'Latín I', 'Literatura Universal']);
+    expect(asignaturasFiltrables(datos)).toEqual(expect.arrayContaining(['Economía', 'Latín I', 'Computación', 'Anatomía']));
+    expect(asignaturasFiltrables(datos)).not.toContain('Religión');
   });
 });
