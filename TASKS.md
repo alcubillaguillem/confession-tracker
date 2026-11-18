@@ -73,3 +73,5 @@ Formato y ciclo: skill `flujo-tareas`.
   - Archivos: public/sw.js
 - [x] T30 · Pestaña Lista: panel en tiempo real (aula ahora y después) de los alumnos a confesar; se añaden con buscador o desde el menú; dura hasta confesarlos a todos
   - Archivos: src/ui/Lista.tsx, src/almacen.ts (lista), src/domain/resolver.ts (momentosDe), src/ui/{App,comun,iconos}.tsx, src/ui/estilos.css
+- [x] T31 · Lista agrupada por la clase actual (hora · aula · asignatura) que se rehace sola al cambiar de franja; bloque aparte para quien no tiene clase
+  - Archivos: src/ui/Lista.tsx, src/ui/estilos.css

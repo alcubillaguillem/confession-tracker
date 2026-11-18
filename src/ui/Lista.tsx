@@ -6,7 +6,9 @@ import { consultar, momentosDe } from '../domain/resolver';
 import { Barra, FilaAlumno, textoUbicacion, type Ctx } from './comun';
 import { Icono } from './iconos';
 
-/** Lista para confesar: panel con dónde está cada alumno ahora y adónde va después. Dura hasta confesarlos a todos. */
+type Clase = { clave: string; aula: string; asignatura: string; planta: number; alumnos: Alumno[] };
+
+/** Lista para confesar: alumnos agrupados por la clase en la que están ahora. Dura hasta confesarlos a todos. */
 export function Lista({ datos, estado, setEstado, alumnos, abrirMenu, avisar }: Ctx) {
   const [q, setQ] = useState('');
   const porExp = new Map(alumnos.map((a) => [a.expediente, a]));
@@ -27,15 +29,31 @@ export function Lista({ datos, estado, setEstado, alumnos, abrirMenu, avisar }: 
     if (ultimo) avisar('Lista completada: todos confesados.');
   };
 
-  const ahora = (a: Alumno) => {
-    if (!dia) return { aula: 'Fin de semana', detalle: '' };
-    if (!actual) return { aula: 'Fuera de horario', detalle: '' };
-    const c = consultar(datos, a, dia, actual.franja);
-    if (c.opciones.length === 1 && !c.ambiguo) {
-      const o = c.opciones[0]!;
-      return { aula: /^\d/.test(o.aula) ? `Aula ${o.aula}` : o.aula, detalle: `${o.asignatura}${o.supuesta ? ' (aula supuesta)' : ''}` };
-    }
-    return { aula: c.opciones.length ? 'Varias opciones' : c.mensaje ?? '', detalle: c.opciones.length ? textoUbicacion(c) : '' };
+  /** Agrupa los pendientes por la clase en la que están ahora (asignatura + aula), de la planta más baja a la más alta. */
+  const clases: Clase[] = [];
+  const sinClase: Alumno[] = [];
+  for (const a of pendientes) {
+    const c = dia && actual ? consultar(datos, a, dia, actual.franja) : undefined;
+    if (!c?.opciones.length) { sinClase.push(a); continue; }
+    const o = c.ambiguo ? { aula: 'Por confirmar', asignatura: textoUbicacion(c) } : c.opciones[0]!;
+    const clave = `${o.aula}|${o.asignatura}`;
+    let g = clases.find((x) => x.clave === clave);
+    if (!g) clases.push(g = { clave, aula: o.aula, asignatura: o.asignatura, planta: datos.aulas[o.aula]?.planta ?? 99, alumnos: [] });
+    g.alumnos.push(a);
+  }
+  clases.sort((x, y) => x.planta - y.planta || x.aula.localeCompare(y.aula, 'es', { numeric: true }));
+  const nombreAula = (aula: string) => (/^\d/.test(aula) ? `Aula ${aula}` : aula);
+  const motivo = !dia ? 'Fin de semana' : !actual ? 'Fuera de horario' : 'Sin clase ahora';
+
+  const fila = (a: Alumno) => {
+    const luego = dia && siguiente ? consultar(datos, a, dia, siguiente.franja) : undefined;
+    return (
+      <FilaAlumno key={a.expediente} a={a} estado={estado} onTap={() => confesar(a.expediente)} onMenu={abrirMenu}
+        sub={`${a.grupo}${luego && siguiente ? ` · después (${siguiente.inicio}): ${textoUbicacion(luego)}` : ''}`}
+        izquierda={<span class="casilla" aria-hidden="true" />}
+        derecha={<button class="icono-btn" aria-label={`Quitar a ${nombreDe(a, estado)} de la lista`}
+          onClick={() => setEstado(alternarLista(a.expediente))}><Icono n="x" /></button>} />
+    );
   };
 
   return (
@@ -69,30 +87,27 @@ export function Lista({ datos, estado, setEstado, alumnos, abrirMenu, avisar }: 
           </div>
 
           <div class="panel-lista">
-            {pendientes.map((a) => {
-              const ya = ahora(a);
-              const luego = dia && siguiente ? consultar(datos, a, dia, siguiente.franja) : undefined;
-              return (
-                <article key={a.expediente} class="tarjeta-alumno" onContextMenu={(e) => { e.preventDefault(); abrirMenu(a); }}>
-                  <header>
-                    <div><strong>{nombreDe(a, estado)}</strong><span class="tenue">{a.grupo}</span></div>
-                    <button class="icono-btn" aria-label="Más opciones" onClick={() => abrirMenu(a)}><Icono n="puntos" /></button>
-                  </header>
-                  <div class="ahora">
-                    <span class="etiqueta">Ahora{actual ? ` · hasta ${actual.fin}` : ''}</span>
-                    <strong class="aula">{ya.aula}</strong>
-                    {ya.detalle && <span>{ya.detalle}</span>}
-                  </div>
-                  {luego && siguiente && (
-                    <p class="despues"><span class="etiqueta">Después · {siguiente.inicio}</span> {textoUbicacion(luego)}</p>
-                  )}
-                  <footer>
-                    <button class="boton primario" onClick={() => confesar(a.expediente)}><Icono n="check" />Confesado</button>
-                    <button class="boton" onClick={() => setEstado(alternarLista(a.expediente))}>Quitar</button>
-                  </footer>
-                </article>
-              );
-            })}
+            {clases.map((g) => (
+              <article key={g.clave} class="grupo-clase">
+                <header>
+                  <span class="etiqueta">{actual!.inicio} · hasta {actual!.fin}</span>
+                  <strong class="aula">{nombreAula(g.aula)}</strong>
+                  <span class="asignatura">{g.asignatura}</span>
+                  <span class="cuantos">{g.alumnos.length}</span>
+                </header>
+                <ul class="lista">{g.alumnos.map(fila)}</ul>
+              </article>
+            ))}
+            {sinClase.length > 0 && (
+              <article class="grupo-clase sin-clase">
+                <header>
+                  <span class="etiqueta">{actual ? `${actual.inicio} · hasta ${actual.fin}` : 'Ahora'}</span>
+                  <strong class="aula">{motivo}</strong>
+                  <span class="cuantos">{sinClase.length}</span>
+                </header>
+                <ul class="lista">{sinClase.map(fila)}</ul>
+              </article>
+            )}
           </div>
 
           {confesados.length > 0 && (

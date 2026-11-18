@@ -13,7 +13,7 @@ Fuente de verdad: `horarios_y_alumnos/Claude outputs/app-confesiones-especificac
 - `src/domain/` lógica pura y testeada: `catalogo.ts`, `esquemas.ts`, `importar.ts`, `resolver.ts`.
 - `src/almacen.ts` base de datos local (IndexedDB, idb-keyval). Los datos del curso no se modifican nunca; marcas, apodos y ocultos viven aparte en `estado`. Sin importar, exportar ni borrar desde la interfaz.
 - `src/avisos.ts` avisos de mitad de mes, final de mes y enhorabuena (al abrir la app; solo recuentos en las notificaciones).
-- `src/ui/` Preact: `App` (barra inferior en móvil, menú lateral en escritorio), `Desbloqueo` (contraseña la primera vez), pestañas `Principal` (dashboard y pendientes), `Lista` (panel en tiempo real de los alumnos a confesar), `Alumnos` (lista alfabética de 20 en 20 con buscador), `Ajustes`; `Horario`; `comun.tsx` (fila con pulsación larga, menú del alumno, anillo); `iconos.tsx` (SVG propios). Paleta morado y dorado en `estilos.css`.
+- `src/ui/` Preact: `App` (barra inferior en móvil, menú lateral en escritorio), `Desbloqueo` (contraseña la primera vez), pestañas `Principal` (dashboard y pendientes), `Lista` (alumnos a confesar agrupados en tiempo real por la clase en la que están), `Alumnos` (lista alfabética de 20 en 20 con buscador), `Ajustes`; `Horario`; `comun.tsx` (fila con pulsación larga, menú del alumno, anillo); `iconos.tsx` (SVG propios). Paleta morado y dorado en `estilos.css`.
 - Ocultar alumno y apodos viven en `estado` (`almacen.ts`); el CSV nunca cambia.
 - `public/sw.js` offline. Icono: estola dorada sobre morado (`icon.svg` + PNG 180/192/512).
 - Grafo: `graphify update .` (solo código, local). `graphify query "..." --budget 800` para consultar.
