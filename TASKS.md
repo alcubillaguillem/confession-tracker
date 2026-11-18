@@ -75,3 +75,5 @@ Formato y ciclo: skill `flujo-tareas`.
   - Archivos: src/ui/Lista.tsx, src/almacen.ts (lista), src/domain/resolver.ts (momentosDe), src/ui/{App,comun,iconos}.tsx, src/ui/estilos.css
 - [x] T31 · Lista agrupada por la clase actual (hora · aula · asignatura) que se rehace sola al cambiar de franja; bloque aparte para quien no tiene clase
   - Archivos: src/ui/Lista.tsx, src/ui/estilos.css
+- [x] T32 · Despliegue: la auditoría bloquea por dependencias de la app; las de desarrollo avisan sin bloquear (picomatch, sin parche aún)
+  - Archivos: .github/workflows/pages.yml, .claude/skills/seguridad-privacidad/SKILL.md

@@ -13,7 +13,7 @@ description: Requisitos obligatorios de seguridad y privacidad (datos de menores
 5. **Validación**: toda entrada externa (CSV, XLSX, copia JSON) pasa por un esquema Zod antes de guardarse. Límite de tamaño de archivo: 5 MB.
 6. **Datos**: solo en IndexedDB del dispositivo. Sin botón de borrado por decisión del usuario: se borran quitando la app o los datos del sitio en el navegador. Nada en `localStorage`, URL ni logs (`console.*` prohibido en `src/`, salvo en los tests).
 7. **Repositorio**: `horarios_y_alumnos/` y cualquier archivo con alumnos reales están en `.gitignore` y `.graphifyignore`. Los tests usan datos ficticios.
-8. **Dependencias**: versiones exactas, `npm audit` = 0. No añadir ninguna sin aprobación.
+8. **Dependencias**: versiones exactas. `npm audit --omit=dev` = 0 (bloquea el despliegue). Los avisos de dependencias de desarrollo (no se publican) se revisan y se actualizan en cuanto haya parche. No añadir ninguna sin aprobación.
 
 ## Comprobación (debe salir vacío, salvo el último comando)
 ```bash

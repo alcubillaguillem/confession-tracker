@@ -24,7 +24,10 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci --ignore-scripts
-      - run: npm audit --audit-level=low
+      # Bloquea si hay vulnerabilidades en lo que se publica (dependencias de la app).
+      - run: npm audit --omit=dev --audit-level=low
+      # Herramientas de compilación y tests: se revisan y se avisa, sin bloquear (no llegan a la web).
+      - run: npm audit --audit-level=low || echo "::warning::Hay avisos de seguridad en dependencias de desarrollo (no se publican). Revisar con npm audit."
       - run: npm test
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
